@@ -11,6 +11,7 @@ Library: C:\Users\USER\Documents\GitHub\IMP\Temp\BurstOutput\tempburstlibs\arm64
 --float-mode=Fast
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\USER\Documents\GitHub\IMP\Temp\Burst
+--debug=LineOnly
 --key-folder=C:/Program Files/Unity/Hub/Editor/6000.0.41f1/Editor/Data/PlaybackEngines/AndroidPlayer
 --decode-folder=C:\Users\USER\Documents\GitHub\IMP\Library\Burst
 --output=C:\Users\USER\Documents\GitHub\IMP\Temp\BurstOutput\tempburstlibs\arm64-v8a\lib_burst_generated
@@ -28,6 +29,7 @@ Library: C:\Users\USER\Documents\GitHub\IMP\Temp\BurstOutput\tempburstlibs\arm64
 --target-framework=NetFramework
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\USER\Documents\GitHub\IMP\Temp\Burst
+--debug=LineOnly
 --key-folder=C:/Program Files/Unity/Hub/Editor/6000.0.41f1/Editor/Data/PlaybackEngines/AndroidPlayer
 --decode-folder=C:\Users\USER\Documents\GitHub\IMP\Library\Burst
 --output=C:\Users\USER\Documents\GitHub\IMP\Temp\BurstOutput\tempburstlibs\arm64-v8a\lib_burst_generated
@@ -143,6 +145,7 @@ Library: C:\Users\USER\Documents\GitHub\IMP\Temp\BurstOutput\tempburstlibs\arm64
 --target-framework=NetFramework
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\USER\Documents\GitHub\IMP\Temp\Burst
+--debug=LineOnly
 --key-folder=C:/Program Files/Unity/Hub/Editor/6000.0.41f1/Editor/Data/PlaybackEngines/AndroidPlayer
 --decode-folder=C:\Users\USER\Documents\GitHub\IMP\Library\Burst
 --output=C:\Users\USER\Documents\GitHub\IMP\Temp\BurstOutput\tempburstlibs\arm64-v8a\lib_burst_generated

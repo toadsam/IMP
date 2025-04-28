@@ -14,11 +14,7 @@ public class ItemSpawner : MonoBehaviour
 
     void Awake()
     {
-        player = FindFirstObjectByType<Player>();
-        if (player == null)
-        {
-            Debug.LogError("Player object not found in the scene!");
-        }
+        player = FindFirstObjectByType<Player>();        
     }
 
     void OnEnable()
@@ -75,11 +71,7 @@ public class ItemSpawner : MonoBehaviour
     }
 
     void Update()
-    {
-        print("Update called");
-        Debug.Log("spawnedFlower is null: " + (spawnedFlower == null));
-        Debug.Log("Input.touchCount: " + Input.touchCount);
-
+    {        
         if (spawnedFlower == null || Input.touchCount == 0) return;
 
         var touch = Input.GetTouch(0);
