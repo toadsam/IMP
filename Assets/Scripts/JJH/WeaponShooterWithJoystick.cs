@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
@@ -8,8 +8,8 @@ public class WeaponShooterWithJoystick : MonoBehaviour
     [System.Serializable]
     public class WeaponData
     {
-        public GameObject weaponPrefab; // ¹ß»çÇÒ ¹«±â ÇÁ¸®ÆÕ
-        public GameObject heldWeaponPrefab; // ¼Õ¿¡ µé°í ÀÖÀ» ¹«±â ÇÁ¸®ÆÕ
+        public GameObject weaponPrefab; // ë°œì‚¬í•  ë¬´ê¸° í”„ë¦¬íŒ¹
+        public GameObject heldWeaponPrefab; // ì†ì— ë“¤ê³  ìˆì„ ë¬´ê¸° í”„ë¦¬íŒ¹
         public AudioClip fireSound;
         public float shootForce = 500f;
         public int damage = 10;
@@ -23,16 +23,23 @@ public class WeaponShooterWithJoystick : MonoBehaviour
     public float fireRate = 0.5f;
     private float nextFire = 0f;
 
-    public Transform weaponHoldPoint; // µé°í ÀÖÀ» ¹«±â¸¦ ºÙÀÏ À§Ä¡
-    private GameObject currentHeldWeapon; // ÇöÀç µé°í ÀÖ´Â ¹«±â ¿ÀºêÁ§Æ®
+    public Transform weaponHoldPoint; // ë“¤ê³  ìˆì„ ë¬´ê¸°ë¥¼ ë¶™ì¼ ìœ„ì¹˜
+    private GameObject currentHeldWeapon; // í˜„ì¬ ë“¤ê³  ìˆëŠ” ë¬´ê¸° ì˜¤ë¸Œì íŠ¸
 
     public AudioSource audioSource;
 
+    private List<GameObject> heldWeapons = new List<GameObject>(); // ì†ì— ë“¤ê³  ìˆëŠ” ë¬´ê¸°ë“¤ì„ ê´€ë¦¬
+    private bool weaponsSpawned = false;
+
     void Start()
     {
+        Invoke(nameof(InitializeWeapons), 0.1f); // ì‚´ì§ ë”œë ˆì´ í›„ ë¬´ê¸° ìƒì„±
+    }
+    void InitializeWeapons()
+    {
+        SpawnAllHeldWeapons();
         EquipCurrentWeapon();
     }
-
     void Update()
     {
         if (Time.time > nextFire && (joystick.Horizontal != 0 || joystick.Vertical != 0))
@@ -42,6 +49,28 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         }
     }
 
+    void SpawnAllHeldWeapons()
+    {
+        heldWeapons.Clear(); // ì¤‘ë³µ ë°©ì§€
+        foreach (var weapon in weapons)
+        {
+            if (weapon.heldWeaponPrefab != null)
+            {
+                GameObject heldWeapon = Instantiate(
+                    weapon.heldWeaponPrefab,
+                    weaponHoldPoint.position,
+                    weaponHoldPoint.rotation,
+                    weaponHoldPoint
+                );
+
+                heldWeapon.transform.localScale = Vector3.one; // âœ… ë¬´ì¡°ê±´ (1,1,1)ë¡œ ê³ ì •
+                heldWeapon.SetActive(false); // ê¸°ë³¸ ë¹„í™œì„±í™”
+                heldWeapons.Add(heldWeapon);
+            }
+        }
+        weaponsSpawned = true;
+    }
+
     public void NextWeapon()
     {
         currentWeaponIndex++;
@@ -49,38 +78,43 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         {
             currentWeaponIndex = 0;
         }
-        Debug.Log("ÇöÀç ¹«±â: " + weapons[currentWeaponIndex].weaponPrefab.name);
+        Debug.Log("í˜„ì¬ ë¬´ê¸°: " + weapons[currentWeaponIndex].weaponPrefab.name);
 
-        EquipCurrentWeapon(); // ¹«±â ÀüÈ¯ ½Ã µé°í ÀÖ´Â ¹«±â º¯°æ
+        EquipCurrentWeapon(); // ë¬´ê¸° ì „í™˜ ì‹œ ë“¤ê³  ìˆëŠ” ë¬´ê¸° ë³€ê²½
     }
 
     void EquipCurrentWeapon()
     {
+        if (!weaponsSpawned) return; // ë¬´ê¸°ê°€ ìŠ¤í°ë˜ì§€ ì•Šì•˜ë‹¤ë©´ ì‹¤í–‰í•˜ì§€ ì•ŠìŒ
+
         if (weaponHoldPoint == null)
         {
-            Debug.LogWarning("Weapon Hold Point°¡ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogWarning("Weapon Hold Pointê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤!");
             return;
         }
 
-        // ÀÌÀü ¹«±â »èÁ¦
-        if (currentHeldWeapon != null)
+        // ëª¨ë“  ë¬´ê¸° ë„ê¸°
+        foreach (var weaponObj in heldWeapons)
         {
-            Destroy(currentHeldWeapon);
+            if (weaponObj != null)
+                weaponObj.SetActive(false);
         }
 
-        // »õ ¹«±â »ı¼º
-        GameObject heldPrefab = weapons[currentWeaponIndex].heldWeaponPrefab;
-        if (heldPrefab != null)
+        // í˜„ì¬ ë¬´ê¸°ë§Œ ì¼œê¸°
+        if (currentWeaponIndex >= 0 && currentWeaponIndex < heldWeapons.Count)
         {
-            currentHeldWeapon = Instantiate(heldPrefab, weaponHoldPoint.position, weaponHoldPoint.rotation, weaponHoldPoint);
+            currentHeldWeapon = heldWeapons[currentWeaponIndex];
+            if (currentHeldWeapon != null)
+            {
+                currentHeldWeapon.SetActive(true);
+            }
         }
     }
-
     void ShootWeapon()
     {
         if (weapons.Count == 0 || arCamera == null || joystick == null)
         {
-            Debug.LogWarning("Weapon ¸®½ºÆ®³ª AR Camera, Joystick ¿¬°áÀÌ ÇÊ¿äÇÕ´Ï´Ù.");
+            Debug.LogWarning("Weapon ë¦¬ìŠ¤íŠ¸ë‚˜ AR Camera, Joystick ì—°ê²°ì´ í•„ìš”í•©ë‹ˆë‹¤.");
             return;
         }
 
@@ -88,11 +122,11 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
         if (currentWeapon.weaponPrefab == null)
         {
-            Debug.LogWarning("ÇöÀç ¼±ÅÃµÈ ¹«±âÀÇ ¹ß»ç¿ë PrefabÀÌ ¾ø½À´Ï´Ù.");
+            Debug.LogWarning("í˜„ì¬ ì„ íƒëœ ë¬´ê¸°ì˜ ë°œì‚¬ìš© Prefabì´ ì—†ìŠµë‹ˆë‹¤.");
             return;
         }
 
-        // ¹ß»ç ¹æÇâ °è»ê
+        // ë°œì‚¬ ë°©í–¥ ê³„ì‚°
         Vector3 direction = new Vector3(joystick.Horizontal, 0, joystick.Vertical).normalized;
 
         if (direction.magnitude < 0.1f)
@@ -119,7 +153,7 @@ public class WeaponShooterWithJoystick : MonoBehaviour
             audioSource.PlayOneShot(currentWeapon.fireSound);
         }
 
-        // 2ÃÊ ÈÄ ÀÚµ¿ »èÁ¦ Ãß°¡
+        // 2ì´ˆ í›„ ìë™ ì‚­ì œ ì¶”ê°€
         Destroy(spawnedWeapon, 2f);
     }
 
