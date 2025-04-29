@@ -19,7 +19,7 @@ public class WeaponShooterWithJoystick : MonoBehaviour
     private int currentWeaponIndex = 0;
 
     public Camera arCamera;
-    public bl_Joystick joystick;
+    public DynamicJoystick joystick;
     public float fireRate = 0.5f;
     private float nextFire = 0f;
 
