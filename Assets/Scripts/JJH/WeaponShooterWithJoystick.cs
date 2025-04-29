@@ -8,6 +8,18 @@ using UnityEngine.UI; // ✅ UI 이미지에 접근할 때 필요
 public class WeaponShooterWithJoystick : MonoBehaviour
 {
     [System.Serializable]
+    public class SkillData
+    {
+        public GameObject skillPrefab;
+        public Transform spawnPoint;
+        public float force = 1000f;
+        public float lifeTime = 3f;
+        public AudioClip skillSound;
+        public string skillAnimation;
+    }
+
+
+    [System.Serializable]
     public class WeaponData
     {
         public GameObject weaponPrefab; // 발사할 무기 프리팹
@@ -22,6 +34,8 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
         public float fireRate = 0.5f; // ✅ 무기별 발사 간격
     }
+
+   // public SkillData skill; // ✅ 단일 스킬 예시
 
     public List<WeaponData> weapons = new List<WeaponData>();
     private int currentWeaponIndex = 0;
@@ -46,6 +60,8 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
 
     public Animator playerAnimator; // ✅ 플레이어 애니메이션 재생용
+
+    public List<SkillData> skills = new List<SkillData>(); // ✅ 여러 스킬 등록 가능
 
     void Start()
     {
@@ -217,6 +233,42 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         yield return new WaitForSeconds(duration);
 
         upperBodyBone.localRotation = originalRotation;
+    }
+
+
+    public void UseSkillByIndex(int index)
+    {
+        if (index < 0 || index >= skills.Count) return;
+
+        SkillData skill = skills[index];
+
+        if (skill.skillPrefab == null || skill.spawnPoint == null) return;
+
+        // 애니메이션
+        if (!string.IsNullOrEmpty(skill.skillAnimation))
+        {
+            playerAnimator.Play(skill.skillAnimation);
+        }
+
+        // 스킬 생성
+        GameObject skillObj = Instantiate(
+            skill.skillPrefab,
+            skill.spawnPoint.position,
+            skill.spawnPoint.rotation
+        );
+
+        Rigidbody rb = skillObj.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            Vector3 forceDir = skill.spawnPoint.forward;
+            forceDir.y = 0;
+            forceDir.Normalize();
+
+            rb.useGravity = false; // ✅ 직선 발사
+            rb.AddForce(forceDir * skill.force, ForceMode.Impulse);
+        }
+
+        Destroy(skillObj, skill.lifeTime);
     }
 
 }
