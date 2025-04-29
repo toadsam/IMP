@@ -17,6 +17,10 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         public int damage = 10;
 
         public Sprite weaponIcon; // ✅ UI에 표시할 무기 아이콘
+
+        public string fireAnimationName; // ✅ 무기를 발사할 때 실행할 애니메이션 이름
+
+        public float fireRate = 0.5f; // ✅ 무기별 발사 간격
     }
 
     public List<WeaponData> weapons = new List<WeaponData>();
@@ -24,7 +28,7 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
     public Camera arCamera;
     public DynamicJoystick joystick;
-    public float fireRate = 0.5f;
+    //public float fireRate = 0.5f;
     private float nextFire = 0f;
 
     public Transform weaponHoldPoint; // 들고 있을 무기를 붙일 위치
@@ -37,6 +41,11 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
     public Image weaponUIImage; // 현재 무기 이미지 표시용
 
+    public Transform upperBodyBone; // 예: 상체 본 (Spine 등)
+    public Vector3 extraRotationEuler; // 추가로 회전하고 싶은 각도
+
+
+    public Animator playerAnimator; // ✅ 플레이어 애니메이션 재생용
 
     void Start()
     {
@@ -49,12 +58,15 @@ public class WeaponShooterWithJoystick : MonoBehaviour
     }
     void Update()
     {
+        WeaponData currentWeapon = weapons[currentWeaponIndex];
+
         if (Time.time > nextFire && (joystick.Horizontal != 0 || joystick.Vertical != 0))
         {
-            nextFire = Time.time + fireRate;
+            nextFire = Time.time + currentWeapon.fireRate; // ✅ 무기별 발사 속도 적용
             ShootWeapon();
         }
     }
+
 
     void SpawnAllHeldWeapons()
     {
@@ -156,6 +168,16 @@ public class WeaponShooterWithJoystick : MonoBehaviour
             return;
         }
 
+        if (playerAnimator != null && !string.IsNullOrEmpty(currentWeapon.fireAnimationName))
+        {
+            playerAnimator.Play(currentWeapon.fireAnimationName);
+
+            if (upperBodyBone != null)
+            {
+                StartCoroutine(TemporarilyRotateUpperBody(extraRotationEuler, 0.3f)); // 애니메이션 길이만큼 유지
+            }
+        }
+
         // 발사 방향 계산
         Vector3 direction = new Vector3(joystick.Horizontal, 0, joystick.Vertical).normalized;
 
@@ -185,6 +207,16 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
         // 2초 후 자동 삭제 추가
         Destroy(spawnedWeapon, 2f);
+    }
+
+    private System.Collections.IEnumerator TemporarilyRotateUpperBody(Vector3 rotationEuler, float duration)
+    {
+        Quaternion originalRotation = upperBodyBone.localRotation;
+        upperBodyBone.localRotation *= Quaternion.Euler(rotationEuler);
+
+        yield return new WaitForSeconds(duration);
+
+        upperBodyBone.localRotation = originalRotation;
     }
 
 }
