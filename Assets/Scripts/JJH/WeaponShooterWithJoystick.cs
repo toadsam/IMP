@@ -2,7 +2,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
-using UnityEngine.UI; // ✅ UI 이미지에 접근할 때 필요
+using UnityEngine.UI;
+using System.Collections; // ✅ UI 이미지에 접근할 때 필요
 
 
 public class WeaponShooterWithJoystick : MonoBehaviour
@@ -33,9 +34,12 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         public string fireAnimationName; // ✅ 무기를 발사할 때 실행할 애니메이션 이름
 
         public float fireRate = 0.5f; // ✅ 무기별 발사 간격
+
+        public float spawnDelay = 0f; // ✅ 무기 생성 지연 시간 (단위: 초)
+
     }
 
-   // public SkillData skill; // ✅ 단일 스킬 예시
+    // public SkillData skill; // ✅ 단일 스킬 예시
 
     public List<WeaponData> weapons = new List<WeaponData>();
     private int currentWeaponIndex = 0;
@@ -79,9 +83,56 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         if (Time.time > nextFire && (joystick.Horizontal != 0 || joystick.Vertical != 0))
         {
             nextFire = Time.time + currentWeapon.fireRate; // ✅ 무기별 발사 속도 적용
-            ShootWeapon();
+            StartCoroutine(ShootWeaponWithSpawnDelay(currentWeapon));
         }
     }
+
+    IEnumerator ShootWeaponWithSpawnDelay(WeaponData currentWeapon)
+    {
+        // 애니메이션 및 상체 회전 (미리 실행)
+        if (playerAnimator != null && !string.IsNullOrEmpty(currentWeapon.fireAnimationName))
+        {
+            playerAnimator.Play(currentWeapon.fireAnimationName);
+
+            if (upperBodyBone != null)
+            {
+                StartCoroutine(TemporarilyRotateUpperBody(extraRotationEuler, 0.3f));
+            }
+        }
+
+        // ✅ 생성 지연 시간만큼 기다림
+        if (currentWeapon.spawnDelay > 0f)
+            yield return new WaitForSeconds(currentWeapon.spawnDelay);
+
+        // 발사 방향 계산
+        Vector3 direction = new Vector3(joystick.Horizontal, 0, joystick.Vertical).normalized;
+        if (direction.magnitude < 0.1f)
+            yield break;
+
+        direction = arCamera.transform.TransformDirection(direction);
+        direction.y = 0;
+
+        GameObject spawnedWeapon = Instantiate(
+            currentWeapon.weaponPrefab,
+            arCamera.transform.position + arCamera.transform.forward * 0.5f,
+            Quaternion.LookRotation(direction)
+        );
+
+        Rigidbody rb = spawnedWeapon.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.useGravity = true;
+            rb.AddForce(direction * currentWeapon.shootForce, ForceMode.Impulse);
+        }
+
+        if (audioSource != null && currentWeapon.fireSound != null)
+        {
+            audioSource.PlayOneShot(currentWeapon.fireSound);
+        }
+
+        Destroy(spawnedWeapon, 2f);
+    }
+
 
 
     void SpawnAllHeldWeapons()
@@ -225,7 +276,7 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         Destroy(spawnedWeapon, 2f);
     }
 
-    private System.Collections.IEnumerator TemporarilyRotateUpperBody(Vector3 rotationEuler, float duration)
+    private IEnumerator TemporarilyRotateUpperBody(Vector3 rotationEuler, float duration)
     {
         Quaternion originalRotation = upperBodyBone.localRotation;
         upperBodyBone.localRotation *= Quaternion.Euler(rotationEuler);
