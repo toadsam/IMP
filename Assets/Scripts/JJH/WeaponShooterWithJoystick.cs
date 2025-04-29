@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.UI; // ✅ UI 이미지에 접근할 때 필요
+
 
 public class WeaponShooterWithJoystick : MonoBehaviour
 {
@@ -13,6 +15,8 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         public AudioClip fireSound;
         public float shootForce = 500f;
         public int damage = 10;
+
+        public Sprite weaponIcon; // ✅ UI에 표시할 무기 아이콘
     }
 
     public List<WeaponData> weapons = new List<WeaponData>();
@@ -30,6 +34,9 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
     private List<GameObject> heldWeapons = new List<GameObject>(); // 손에 들고 있는 무기들을 관리
     private bool weaponsSpawned = false;
+
+    public Image weaponUIImage; // 현재 무기 이미지 표시용
+
 
     void Start()
     {
@@ -54,19 +61,19 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         heldWeapons.Clear(); // 중복 방지
         foreach (var weapon in weapons)
         {
-            if (weapon.heldWeaponPrefab != null)
-            {
-                GameObject heldWeapon = Instantiate(
-                    weapon.heldWeaponPrefab,
-                    weaponHoldPoint.position,
-                    weaponHoldPoint.rotation,
-                    weaponHoldPoint
-                );
+          //  if (weapon.heldWeaponPrefab != null)
+          //  {
+                //GameObject heldWeapon = Instantiate(
+                   /// weapon.heldWeaponPrefab,
+                 //   weaponHoldPoint.position,
+                  //  weaponHoldPoint.rotation,
+                  //  weaponHoldPoint
+                //);
 
-                heldWeapon.transform.localScale = Vector3.one; // ✅ 무조건 (1,1,1)로 고정
-                heldWeapon.SetActive(false); // 기본 비활성화
-                heldWeapons.Add(heldWeapon);
-            }
+                //weapon.heldWeaponPrefab.transform.localScale = Vector3.one; // ✅ 무조건 (1,1,1)로 고정
+                weapon.heldWeaponPrefab.SetActive(false); // 기본 비활성화
+                heldWeapons.Add(weapon.heldWeaponPrefab);
+            
         }
         weaponsSpawned = true;
     }
@@ -82,6 +89,27 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
         EquipCurrentWeapon(); // 무기 전환 시 들고 있는 무기 변경
     }
+
+    public void PreviousWeapon()
+    {
+        currentWeaponIndex--;
+        if (currentWeaponIndex < 0)
+        {
+            currentWeaponIndex = weapons.Count - 1;
+        }
+        Debug.Log("현재 무기: " + weapons[currentWeaponIndex].weaponPrefab.name);
+        EquipCurrentWeapon();
+    }
+
+    void UpdateWeaponUI()
+    {
+        if (weaponUIImage != null && weapons.Count > 0)
+        {
+            Sprite icon = weapons[currentWeaponIndex].weaponIcon;
+            weaponUIImage.sprite = icon;
+        }
+    }
+
 
     void EquipCurrentWeapon()
     {
@@ -109,6 +137,8 @@ public class WeaponShooterWithJoystick : MonoBehaviour
                 currentHeldWeapon.SetActive(true);
             }
         }
+        UpdateWeaponUI(); // ✅ 이미지 갱신
+
     }
     void ShootWeapon()
     {
