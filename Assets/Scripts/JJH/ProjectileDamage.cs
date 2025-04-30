@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class ProjectileDamage : MonoBehaviour
 {
+
+    public bool isDestroy;
     public int damage = 10;
 
     private void OnTriggerEnter(Collider other)
@@ -12,7 +14,7 @@ public class ProjectileDamage : MonoBehaviour
 
             // 필요한 경우 여기에 실제 체력 감소 코드도 추가 가능
             // other.GetComponent<MonsterHealth>()?.TakeDamage(damage);
-
+            if(isDestroy)
             Destroy(gameObject); // 충돌 후 제거하고 싶다면
         }
     }
