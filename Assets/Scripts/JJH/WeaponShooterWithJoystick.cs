@@ -96,7 +96,7 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
             if (upperBodyBone != null)
             {
-                StartCoroutine(TemporarilyRotateUpperBody(extraRotationEuler, 0.3f));
+                StartCoroutine(TemporarilyRotateUpperBody(extraRotationEuler, 0.15f));
             }
         }
 
