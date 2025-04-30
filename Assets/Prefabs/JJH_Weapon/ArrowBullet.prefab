@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3990107704306365474}
   - component: {fileID: 6529809313933969168}
   - component: {fileID: 8174814024340289778}
+  - component: {fileID: 253058707228855742}
   m_Layer: 0
   m_Name: ArrowBullet
   m_TagString: Untagged
@@ -4895,6 +4896,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.57, y: 0.29, z: 3.23}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &253058707228855742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2780236779110228779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63d4532ba9992d74e8c63109b7665fb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
 --- !u!1 &4165474866271938423
 GameObject:
   m_ObjectHideFlags: 0

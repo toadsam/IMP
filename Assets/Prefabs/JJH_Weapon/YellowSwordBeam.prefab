@@ -14686,6 +14686,7 @@ GameObject:
   - component: {fileID: 270202116337142725}
   - component: {fileID: 6458288688311111544}
   - component: {fileID: 3902342062926748545}
+  - component: {fileID: 1621306489585096161}
   m_Layer: 0
   m_Name: YellowSwordBeam
   m_TagString: Untagged
@@ -19571,6 +19572,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4, y: 0.2, z: -2.2}
   m_Center: {x: 0, y: 0, z: -0.82}
+--- !u!114 &1621306489585096161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4406818498314116215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63d4532ba9992d74e8c63109b7665fb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
 --- !u!1 &5759539570247196450
 GameObject:
   m_ObjectHideFlags: 0
