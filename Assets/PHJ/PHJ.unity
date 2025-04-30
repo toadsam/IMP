@@ -648,10 +648,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trackedImageManager: {fileID: 1708011688}
-  flowerPrefab: {fileID: 8360198723985674295, guid: 972adb003e2525c44b900dd11801be18,
+  flowerPrefab: {fileID: 621584630249350254, guid: af9d1131c788d454fa7dae4544fa99d2,
     type: 3}
-  sosPrefab: {fileID: 0}
+  sosPrefab: {fileID: 1818861082154570, guid: 5e45c8f884f6d124ea0499aae7fdbec8, type: 3}
   anotherPrefab: {fileID: 0}
+  health: 100
 --- !u!114 &1708011687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -664,7 +665,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5b3557a409062b488ac4ec8734fb383, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 100
 --- !u!114 &1708011688
 MonoBehaviour:
   m_ObjectHideFlags: 0

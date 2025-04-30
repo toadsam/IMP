@@ -15,6 +15,11 @@ public class ItemSpawner : MonoBehaviour
     private Player player;
     private Dictionary<string, GameObject> spawnedObjects = new Dictionary<string, GameObject>();
     private HashSet<string> collectedItems = new HashSet<string>();
+    private GameObject selectedObject; // Dragged Object
+    private Vector3 dragOffset; // Offset for dragging
+    private Plane dragPlane; // Plane for dragging
+    public int health = 100; // Player's Health
+    private bool isDragging = false; // 드래그 상태를 추적하는 변수
 
     void Awake()
     {
@@ -52,6 +57,11 @@ public class ItemSpawner : MonoBehaviour
         // 추적이 중지된 경우, 해당 오브젝트 숨기기
         if (trackedImage.trackingState != TrackingState.Tracking)
         {
+            var trackedKey = trackedImage.referenceImage.name;
+
+            if (trackedKey == "sos") {
+                return;
+            }
             if (spawnedObjects.TryGetValue(trackedImage.referenceImage.name, out var obj))
                 obj.SetActive(false);
             return;
@@ -59,6 +69,10 @@ public class ItemSpawner : MonoBehaviour
 
         var key = trackedImage.referenceImage.name;
         if (collectedItems.Contains(key))
+            return;
+
+        // 드래그 중이거나 드래그가 완료된 상태에서는 위치를 갱신하지 않음
+        if (key == "sos" && isDragging)
             return;
 
         // 이미지 이름별로 올바른 프리팹 생성/갱신
@@ -84,18 +98,39 @@ public class ItemSpawner : MonoBehaviour
         var key = trackedImage.referenceImage.name;
         if (spawnedObjects.TryGetValue(key, out var obj))
         {
-            Destroy(obj);
-            spawnedObjects.Remove(key);
+            if (key == "sos")
+            {
+                // Sos Prefab은 7초 뒤에만 삭제
+                StartCoroutine(DestroyAfterDelay(obj, 7f));
+            }
+            else
+            {
+                // 다른 프리팹은 즉시 삭제
+                Destroy(obj);
+                spawnedObjects.Remove(key);
+            }
         }
     }
+
+    private IEnumerator DestroyAfterDelay(GameObject obj, float delay)
+{
+    yield return new WaitForSeconds(delay);
+
+    // 오브젝트가 여전히 존재하고 활성화되어 있다면 삭제
+    if (obj != null)
+    {
+        Destroy(obj);
+        Debug.Log($"Sos Prefab has been destroyed after {delay} seconds.");
+    }
+}
 
     private void SpawnOrUpdate(string key, GameObject prefab, Vector3 position, Quaternion rotation)
     {
         if (!spawnedObjects.ContainsKey(key))
-            spawnedObjects[key] = Instantiate(prefab, position, rotation);
+            spawnedObjects[key] = Instantiate(prefab, position, Quaternion.Euler(0, 90f, 0));
 
         var obj = spawnedObjects[key];
-        obj.transform.SetPositionAndRotation(position, rotation);
+        obj.transform.SetPositionAndRotation(position, Quaternion.Euler(0, 90f, 0));
         obj.SetActive(true);
     }
 
@@ -104,18 +139,52 @@ public class ItemSpawner : MonoBehaviour
         if (Input.touchCount == 0) return;
 
         var touch = Input.GetTouch(0);
-        if (touch.phase != TouchPhase.Began) return;
 
-        Ray ray = Camera.main.ScreenPointToRay(touch.position);
-        if (!Physics.Raycast(ray, out var hit)) return;
-
-        foreach (var kvp in spawnedObjects)
+        // 터치 시작 시 오브젝트 선택
+        if (touch.phase == TouchPhase.Began)
         {
-            if (hit.collider.gameObject == kvp.Value)
+            Ray ray = Camera.main.ScreenPointToRay(touch.position);
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                HandleObjectClick(kvp.Key);
-                break;
+                foreach (var kvp in spawnedObjects)
+                {
+                    if (hit.collider.gameObject == kvp.Value)
+                    {
+                        // 'sos' 키에 해당하는 오브젝트만 드래그 가능
+                        if (kvp.Key == "sos" && hit.collider.gameObject == kvp.Value)
+                        {
+                            selectedObject = kvp.Value; // Sos Prefab 저장
+                            dragPlane = new Plane(Vector3.up, selectedObject.transform.position);
+                            dragOffset = selectedObject.transform.position - hit.point;
+                            isDragging = true; // 드래그 시작
+                            HandleObjectClick(kvp.Key);
+                            break;
+                        }
+
+                        // 다른 오브젝트는 클릭 동작 처리
+                        HandleObjectClick(kvp.Key);
+                        break;
+                    }
+                }
             }
+        }
+
+        // 터치 이동 시 오브젝트 드래그
+        if (touch.phase == TouchPhase.Moved && selectedObject != null)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(touch.position);
+            if (dragPlane.Raycast(ray, out float enter))
+            {
+                Vector3 hitPoint = ray.GetPoint(enter); // 평면과의 교차점
+                selectedObject.transform.position = hitPoint + dragOffset; // 오프셋 유지하며 이동
+            }
+        }
+
+        // 터치 종료 시 선택 해제 (오브젝트는 사라지지 않음)
+        if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+        {
+            selectedObject = null; // 선택 해제
+            //isDragging = false; // 드래그 종료
         }
     }
 
@@ -125,7 +194,7 @@ public class ItemSpawner : MonoBehaviour
         {
             case "Flower":
                 Debug.Log("Flower object clicked!");
-                player?.AddHealth(10);
+                player?.AddHealth(health);
                 Debug.Log("Player's health increased by 10.");
                 collectedItems.Add("Flower");
                 Destroy(spawnedObjects["Flower"]);
@@ -135,9 +204,9 @@ public class ItemSpawner : MonoBehaviour
             case "sos":
                 Debug.Log("SOS object clicked!");
                 // SOS 전용 동작 추가 가능
-                collectedItems.Add("sos");
-                Destroy(spawnedObjects["sos"]);
-                spawnedObjects.Remove("sos");
+                //collectedItems.Add("sos");
+                //Destroy(spawnedObjects["sos"]);
+                //spawnedObjects.Remove("sos");
                 break;
 
             case "AnotherImage":

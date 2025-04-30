@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public int Health = 100;
-    
+        
     void Start()
     {
         
@@ -17,7 +16,7 @@ public class Player : MonoBehaviour
 
     public void AddHealth(int health)
     {
-        Health += health;
+        health += 10;
         Debug.Log("Your Health:" + health);
     }
 
