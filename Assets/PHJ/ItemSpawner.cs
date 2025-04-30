@@ -1,99 +1,156 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
+[RequireComponent(typeof(ARTrackedImageManager))]
 public class ItemSpawner : MonoBehaviour
 {
     [SerializeField] private ARTrackedImageManager trackedImageManager;
     [SerializeField] private GameObject flowerPrefab;
+    [SerializeField] private GameObject sosPrefab;
+    [SerializeField] private GameObject anotherPrefab;
 
     private Player player;
-    private GameObject spawnedFlower;
-    private bool flowerCollected;
+    private Dictionary<string, GameObject> spawnedObjects = new Dictionary<string, GameObject>();
+    private HashSet<string> collectedItems = new HashSet<string>();
 
     void Awake()
     {
-        player = FindFirstObjectByType<Player>();        
+        // 씬에서 Player 스크립트를 찾아 자동으로 할당
+        player = Object.FindFirstObjectByType<Player>();
     }
 
     void OnEnable()
     {
-        trackedImageManager.trackablesChanged.AddListener(OnImageChanged);
+        if (trackedImageManager != null)
+            trackedImageManager.trackablesChanged.AddListener(OnTrackedImagesChanged);
     }
 
     void OnDisable()
     {
-        trackedImageManager.trackablesChanged.RemoveListener(OnImageChanged);
+        if (trackedImageManager != null)
+            trackedImageManager.trackablesChanged.RemoveListener(OnTrackedImagesChanged);
     }
 
-    private void OnImageChanged(ARTrackablesChangedEventArgs<ARTrackedImage> args)
+    // AR Foundation 6.x용 이벤트 핸들러
+    private void OnTrackedImagesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
     {
-        foreach (var img in args.added)
-        {
-            HandleFlower(img);
-        }
+        foreach (var addedImage in eventArgs.added)
+            HandleTrackedImage(addedImage);
 
-        foreach (var img in args.updated)
-        {
-            HandleFlower(img);
-        }
+        foreach (var updatedImage in eventArgs.updated)
+            HandleTrackedImage(updatedImage);
 
-        foreach (var img in args.removed)
-        {
-            if (spawnedFlower != null)
-            {
-                Destroy(spawnedFlower);
-                spawnedFlower = null;
-                flowerCollected = false;
-            }
-        }
+        foreach (var removedImage in eventArgs.removed)
+            HandleRemovedImage(removedImage.Value);
     }
 
-    private void HandleFlower(ARTrackedImage img)
+    private void HandleTrackedImage(ARTrackedImage trackedImage)
     {
-        if (img.referenceImage.name != "Flower" || flowerCollected)
+        // 추적이 중지된 경우, 해당 오브젝트 숨기기
+        if (trackedImage.trackingState != TrackingState.Tracking)
+        {
+            if (spawnedObjects.TryGetValue(trackedImage.referenceImage.name, out var obj))
+                obj.SetActive(false);
+            return;
+        }
+
+        var key = trackedImage.referenceImage.name;
+        if (collectedItems.Contains(key))
             return;
 
-        if (img.trackingState == TrackingState.Tracking)
+        // 이미지 이름별로 올바른 프리팹 생성/갱신
+        switch (key)
         {
-            if (spawnedFlower == null)
-            {
-                spawnedFlower = Instantiate(flowerPrefab, img.transform.position, Quaternion.identity);
-            }
-            spawnedFlower.transform.position = img.transform.position;
-            spawnedFlower.SetActive(true);
+            case "Flower":
+                SpawnOrUpdate(key, flowerPrefab, trackedImage.transform.position, trackedImage.transform.rotation);
+                break;
+            case "sos":
+                SpawnOrUpdate(key, sosPrefab, trackedImage.transform.position, trackedImage.transform.rotation);
+                break;
+            case "AnotherImage":
+                SpawnOrUpdate(key, anotherPrefab, trackedImage.transform.position, trackedImage.transform.rotation);
+                break;
+            default:
+                Debug.LogWarning($"Unhandled tracked image: {key}");
+                break;
         }
-        else if (spawnedFlower != null)
+    }
+
+    private void HandleRemovedImage(ARTrackedImage trackedImage)
+    {
+        var key = trackedImage.referenceImage.name;
+        if (spawnedObjects.TryGetValue(key, out var obj))
         {
-            spawnedFlower.SetActive(false);
+            Destroy(obj);
+            spawnedObjects.Remove(key);
         }
+    }
+
+    private void SpawnOrUpdate(string key, GameObject prefab, Vector3 position, Quaternion rotation)
+    {
+        if (!spawnedObjects.ContainsKey(key))
+            spawnedObjects[key] = Instantiate(prefab, position, rotation);
+
+        var obj = spawnedObjects[key];
+        obj.transform.SetPositionAndRotation(position, rotation);
+        obj.SetActive(true);
     }
 
     void Update()
-    {        
-        if (spawnedFlower == null || Input.touchCount == 0) return;
+    {
+        if (Input.touchCount == 0) return;
 
         var touch = Input.GetTouch(0);
         if (touch.phase != TouchPhase.Began) return;
 
         Ray ray = Camera.main.ScreenPointToRay(touch.position);
-        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.gameObject == spawnedFlower)
+        if (!Physics.Raycast(ray, out var hit)) return;
+
+        foreach (var kvp in spawnedObjects)
         {
-            Debug.Log("Raycast hit: " + hit.collider.gameObject.name);
-            if (player != null)
+            if (hit.collider.gameObject == kvp.Value)
             {
-                player.AddHealth(10);
-                print("Item collected: +10 health");
-                Debug.Log("Player's remaining health: " + player.Health);
-                flowerCollected = true;
-                Destroy(spawnedFlower);
-                spawnedFlower = null;
+                HandleObjectClick(kvp.Key);
+                break;
             }
-            else
-            {
-                Debug.LogError("Player is null!");
-            }
+        }
+    }
+
+    private void HandleObjectClick(string imageName)
+    {
+        switch (imageName)
+        {
+            case "Flower":
+                Debug.Log("Flower object clicked!");
+                player?.AddHealth(10);
+                Debug.Log("Player's health increased by 10.");
+                collectedItems.Add("Flower");
+                Destroy(spawnedObjects["Flower"]);
+                spawnedObjects.Remove("Flower");
+                break;
+
+            case "sos":
+                Debug.Log("SOS object clicked!");
+                // SOS 전용 동작 추가 가능
+                collectedItems.Add("sos");
+                Destroy(spawnedObjects["sos"]);
+                spawnedObjects.Remove("sos");
+                break;
+
+            case "AnotherImage":
+                Debug.Log("AnotherImage object clicked!");
+                // 다른 이미지 전용 동작 추가 가능
+                collectedItems.Add("AnotherImage");
+                Destroy(spawnedObjects["AnotherImage"]);
+                spawnedObjects.Remove("AnotherImage");
+                break;
+
+            default:
+                Debug.LogWarning($"Unhandled object clicked: {imageName}");
+                break;
         }
     }
 }
