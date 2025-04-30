@@ -73,6 +73,12 @@ public class WeaponShooterWithJoystick : MonoBehaviour
     void Start()
     {
         Invoke(nameof(InitializeWeapons), 0.1f); // 살짝 딜레이 후 무기 생성
+
+        // ✅ 스킬 쿨타임 초기화: 시작부터 쿨타임을 돌림
+        foreach (var skill in skills)
+        {
+            skill.lastUsedTime = Time.time;
+        }
     }
     void InitializeWeapons()
     {
