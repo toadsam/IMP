@@ -558,15 +558,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 3837aa826c2fd1442afb07be2a80da11, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.00224
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 3837aa826c2fd1442afb07be2a80da11, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.0065
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 3837aa826c2fd1442afb07be2a80da11, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.00052
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 3837aa826c2fd1442afb07be2a80da11, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1940,7 +1940,9 @@ MonoBehaviour:
     force: 1000
     lifeTime: 3
     skillSound: {fileID: 0}
-    skillAnimation: Arrow
+    skillAnimation: Skill
+    cooldown: 12
+    lastUsedTime: -Infinity
   - skillPrefab: {fileID: 7110765135046002263, guid: b9daec7f15e39984b96a0ed5c235534c,
       type: 3}
     spawnPoint: {fileID: 186680577}
@@ -1948,6 +1950,8 @@ MonoBehaviour:
     lifeTime: 3
     skillSound: {fileID: 0}
     skillAnimation: Arrow
+    cooldown: 12
+    lastUsedTime: -Infinity
 --- !u!4 &316855067
 Transform:
   m_ObjectHideFlags: 0
@@ -5405,6 +5409,7 @@ GameObject:
   m_Component:
   - component: {fileID: 907026951}
   - component: {fileID: 907026952}
+  - component: {fileID: 907026953}
   m_Layer: 5
   m_Name: Skill
   m_TagString: Untagged
@@ -5491,6 +5496,39 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 907026953}
+        m_TargetAssemblyTypeName: SkillCooldown, Assembly-CSharp
+        m_MethodName: UseSkill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &907026953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907026950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf3ea7b5fa595ba488336515714a8ff0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fillImages:
+  - {fileID: 1676118083}
+  - {fileID: 1238579928}
+  - {fileID: 10051387}
+  - {fileID: 1134672582}
+  - {fileID: 984745348}
+  - {fileID: 2008536726}
+  chargeInterval: 2
+  cooldownTime: 12
 --- !u!1 &917557928
 GameObject:
   m_ObjectHideFlags: 0

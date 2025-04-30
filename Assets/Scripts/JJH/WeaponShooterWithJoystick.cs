@@ -17,6 +17,9 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         public float lifeTime = 3f;
         public AudioClip skillSound;
         public string skillAnimation;
+
+        public float cooldown = 3f; // ✅ 쿨타임
+        [HideInInspector] public float lastUsedTime = -Mathf.Infinity; // ✅ 마지막 사용 시간
     }
 
 
@@ -293,15 +296,22 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
         SkillData skill = skills[index];
 
+        // ✅ 쿨타임 체크
+        if (Time.time < skill.lastUsedTime + skill.cooldown)
+        {
+            Debug.Log($"스킬 {index}은 아직 쿨타임입니다!");
+            return;
+        }
+
+        skill.lastUsedTime = Time.time; // 마지막 사용 시간 갱신
+
         if (skill.skillPrefab == null || skill.spawnPoint == null) return;
 
-        // 애니메이션
         if (!string.IsNullOrEmpty(skill.skillAnimation))
         {
             playerAnimator.Play(skill.skillAnimation);
         }
 
-        // 스킬 생성
         GameObject skillObj = Instantiate(
             skill.skillPrefab,
             skill.spawnPoint.position,
@@ -315,7 +325,7 @@ public class WeaponShooterWithJoystick : MonoBehaviour
             forceDir.y = 0;
             forceDir.Normalize();
 
-            rb.useGravity = false; // ✅ 직선 발사
+            rb.useGravity = false;
             rb.AddForce(forceDir * skill.force, ForceMode.Impulse);
         }
 
