@@ -29471,9 +29471,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbdc8d1cf3ca760458fc2421ccdfc069, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToSpawn: {fileID: 3296631356747061355, guid: dc23352c095e2ca449173143693cd67d,
+  objectToSpawn: {fileID: 3719917613301537243, guid: 5d79511028316444e85e83c81854cd06,
     type: 3}
-  spawnDelay: 1
+  spawnDelay: 0.7
   destroyAfter: 2
 --- !u!114 &7553129233370972400
 MonoBehaviour:
@@ -29487,4 +29487,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63d4532ba9992d74e8c63109b7665fb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDestroy: 1
   damage: 10
