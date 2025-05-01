@@ -1,0 +1,216 @@
+using System.Collections;
+using UnityEngine;
+
+public class Spawner : MonoBehaviour
+{
+    public Transform player;
+    public GameObject enemy1Prefab;
+    public GameObject boss1Prefab;
+    public GameObject enemy2Prefab;
+    public GameObject boss2Prefab;
+    public GameObject enemy3Prefab;
+    public GameObject boss3Prefab;
+
+    public int counterBoss = 10;
+    private int slainedMoster = 0;
+
+    private bool enemy1Spawned = false;
+    private bool enemy2Spawned = false;
+    private bool enemy3Spawned = false;
+
+    private bool boss1Spawned = false;
+    private bool boss2Spawned = false;
+    private bool boss3Spawned = false;
+
+    public float spawnInterval = 3f;
+
+    void Start()
+    {
+        enemy1Spawned = true;
+        StartCoroutine(SpawnEnemy1());
+    }
+
+    void Update()
+    {
+        
+    }
+
+    IEnumerator SpawnEnemy1()
+    {
+        Debug.Log("Enemy1 start");
+        while (enemy1Spawned)
+        {
+            SpawnMonster(enemy1Prefab);
+            yield return new WaitForSeconds(spawnInterval);
+        }
+    }
+
+    IEnumerator SpawnEnemy2()
+    {
+        while (enemy2Spawned)
+        {
+            SpawnMonster(enemy2Prefab);
+            yield return new WaitForSeconds(spawnInterval);
+        }
+    }
+
+    IEnumerator SpawnEnemy3()
+    {
+        while (enemy3Spawned)
+        {
+            SpawnMonster(enemy3Prefab);
+            yield return new WaitForSeconds(spawnInterval);
+        }
+    }
+
+    void SpawnMonster(GameObject prefab)
+    {
+        Vector3 spawnPos = transform.position + new Vector3(player.position.x + Random.Range(-0.1f,0.1f), player.position.y, player.position.z);  
+        spawnPos.y = player.position.y;
+        GameObject monster = Instantiate(prefab, spawnPos, Quaternion.identity);
+        if (monster.TryGetComponent<Enemy1>(out var enemy1))
+        {
+            enemy1.Init(player, this);
+        }
+
+        if (monster.TryGetComponent<Boss1>(out var boss1))
+        {
+            boss1.Init(player, this);
+        }
+
+        if (monster.TryGetComponent<Enemy2>(out var enemy2))
+        {
+            enemy2.Init(player, this);
+        }
+
+        if (monster.TryGetComponent<Boss2>(out var boss2))
+        {
+            boss2.Init(player, this);
+        }
+        
+        if (monster.TryGetComponent<Enemy3>(out var enemy3))
+        {
+            enemy3.Init(player, this);
+            StartCoroutine(Cloaking(monster));
+        }
+
+        if (monster.TryGetComponent<Boss3>(out var boss3))
+        {
+            boss3.Init(player, this);
+        }
+    }
+
+    public void OnEnemy1Slained()
+    {
+        slainedMoster ++;
+        Debug.Log("Enemy1:" + slainedMoster);
+        if (slainedMoster >= counterBoss && !boss1Spawned)
+        {
+            enemy1Spawned = false;
+            boss1Spawned = true;
+            StartCoroutine(SpawnBoss1());
+            slainedMoster = 0;
+        }
+    }
+
+    public void OnEnemy2Slained()
+    {
+        slainedMoster++;
+        Debug.Log("Enemy2:" + slainedMoster);
+        if (slainedMoster >= counterBoss && !boss2Spawned)
+        {
+            enemy2Spawned = false;
+            boss2Spawned = true;
+            StartCoroutine(SpawnBoss2());
+            slainedMoster = 0;
+        }
+    }
+
+    public void OnEnemy3Slained()
+    {
+        slainedMoster++;
+        Debug.Log("Enemy3:" + slainedMoster);
+        if (slainedMoster >= counterBoss && !boss3Spawned)
+        {
+            enemy3Spawned = false;
+            boss3Spawned = true;
+            StartCoroutine(SpawnBoss3());
+            slainedMoster = 0;
+        }
+    }
+
+    public void OnBoss1Slained()
+    {
+        Debug.Log("You Slained Boss1");
+        if (!enemy2Spawned)
+        {
+            boss1Spawned = false;
+            enemy2Spawned = true;
+            StartCoroutine(SpawnEnemy2());
+            slainedMoster = 0;
+        }
+    }
+
+    public void OnBoss2Slained()
+    {
+        Debug.Log("You Slained Boss2");
+        if (!enemy3Spawned)
+        {
+            boss2Spawned = false;
+            enemy3Spawned = true;
+            StartCoroutine(SpawnEnemy3());            
+            slainedMoster = 0;
+        }
+    }
+
+    public void OnBoss3Slained()
+    {
+        Debug.Log("You Slained Boss3");
+
+        boss3Spawned = false;
+        enemy3Spawned = false;
+        slainedMoster = 0;
+    }
+
+    IEnumerator SpawnBoss1()
+    {
+        yield return new WaitForSeconds(3f);
+        if(boss1Spawned)
+        {
+            Debug.Log("Warning1");
+            SpawnMonster(boss1Prefab);
+        }        
+    }
+
+    IEnumerator SpawnBoss2()
+    {
+        yield return new WaitForSeconds(3f);
+        if (boss2Spawned)
+        {
+            Debug.Log("Warning2");
+            SpawnMonster(boss2Prefab);
+        }        
+    }
+
+    IEnumerator SpawnBoss3()
+    {
+        yield return new WaitForSeconds(3f);
+        if(boss3Spawned)
+        {
+            Debug.Log("Warning3");
+            SpawnMonster(boss3Prefab);
+        }        
+    }
+
+    IEnumerator Cloaking(GameObject cloakingEnemy)
+    {
+        while (cloakingEnemy != null)
+        {
+            yield return new WaitForSeconds(2f);
+            cloakingEnemy.SetActive(false);
+            yield return new WaitForSeconds(0.5f + Random.Range(-0.25f, 0.25f));
+            cloakingEnemy.SetActive(true);
+        }        
+    }
+
+}
