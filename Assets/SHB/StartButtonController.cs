@@ -46,11 +46,18 @@ public class StartButtonController : MonoBehaviour
         destroyAllPlane();
         GameObject floor = GameObject.FindWithTag("floor");
         GameObject[] wall = GameObject.FindGameObjectsWithTag("wall");
+        GameObject[] spawner = GameObject.FindGameObjectsWithTag("spawner");
 
         if(floor != null) Destroy(floor);
         if(wall != null){
             foreach(var walls in wall){
                 Destroy(walls);
+            }
+        }
+
+        if(spawner != null){
+            foreach(var spawners in spawner){
+                Destroy(spawners);
             }
         }
 

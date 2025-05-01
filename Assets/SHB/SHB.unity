@@ -1549,12 +1549,14 @@ MonoBehaviour:
     type: 3}
   StartButtonController: {fileID: 1957427919}
   myCamera: {fileID: 1400146306}
+  monsterSpawner: {fileID: 2014905760626959085, guid: 5c02f12b50f508442bd4c1b0e2d4b74b,
+    type: 3}
   allSetEnd:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1147757057}
         m_TargetAssemblyTypeName: UseThis, Assembly-CSharp
-        m_MethodName: getPlaneInfo
+        m_MethodName: getInfo
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

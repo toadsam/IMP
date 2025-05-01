@@ -13,6 +13,8 @@ public class AdjustmentSystem : MonoBehaviour
     public GameObject StartButtonController;
     public GameObject myCamera;
 
+    public GameObject monsterSpawner;
+
     public UnityEvent allSetEnd;
 
     public Vector3[] floorCornersFinal = new Vector3[4];
@@ -107,6 +109,9 @@ public class AdjustmentSystem : MonoBehaviour
         //StartButtonController.GetComponent<StartButtonController>().destroyAllPlane();
         floorCornersFinal = floorCorners;
 
+        // 7. 몬스터스포너 생성
+        SpawnMonsterSpawners(floor.transform, width, length);
+
         sendAllSetEnd();
     }
 
@@ -135,6 +140,32 @@ public class AdjustmentSystem : MonoBehaviour
             wall.transform.rotation = Quaternion.LookRotation(directionToLook);
         }
     }
+
+    void SpawnMonsterSpawners(Transform floorTransform, float width, float length)
+{
+    if (monsterSpawner == null || myCamera == null) return;
+
+    Vector3 floorCenter = floorTransform.position;
+    Vector3 floorForward = myCamera.transform.forward;
+    floorForward.y = 0f;
+    floorForward.Normalize();
+
+    Vector3 floorRight = Vector3.Cross(Vector3.up, floorForward).normalized;
+
+    float forwardOffset = length * 0.5f * 0.95f;  // 앞쪽으로 약간 덜 나감
+    float sideOffset = width * 0.5f * 0.9f;       // 좌우로 약간 덜 나감
+
+    // 앞쪽 중앙
+    Vector3 centerPos = floorCenter + floorForward * forwardOffset;
+
+    // 앞쪽 왼쪽, 오른쪽
+    Vector3 leftPos = centerPos - floorRight * sideOffset;
+    Vector3 rightPos = centerPos + floorRight * sideOffset;
+
+    Instantiate(monsterSpawner, leftPos, Quaternion.identity);
+    Instantiate(monsterSpawner, centerPos, Quaternion.identity);
+    Instantiate(monsterSpawner, rightPos, Quaternion.identity);
+}
 
 
     public void sendAllSetEnd()
