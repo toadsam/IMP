@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6522586650559030041}
-  - component: {fileID: 7235811159390784812}
   - component: {fileID: 186418752334869330}
   - component: {fileID: 865001162026400264}
+  - component: {fileID: -7575339454168130667}
   m_Layer: 0
   m_Name: Boss1
   m_TagString: Untagged
@@ -35,21 +35,6 @@ Transform:
   - {fileID: 7053218899015160446}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7235811159390784812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1901613050895639237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99656aeaf99623644b792d763b659fc4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 0.05
-  target: {fileID: 0}
-  spawner: {fileID: 0}
 --- !u!136 &186418752334869330
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -100,6 +85,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &-7575339454168130667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901613050895639237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8f9328a160f8c44fa39404de4f499e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 0.5
+  health: 100
+  damage: 10
 --- !u!1001 &7379333005504132501
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1637,12 +1637,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 907665932}
-  smallMonsterPrefab: {fileID: 265478299795778748, guid: 52ca324e59804fb4f80ab45c25b92c43,
+  enemy1Prefab: {fileID: 265478299795778748, guid: 52ca324e59804fb4f80ab45c25b92c43,
     type: 3}
-  bossMonsterPrefab: {fileID: 1901613050895639237, guid: 0a183d37899f91a4093f0bb8452f51a2,
+  boss1Prefab: {fileID: 1901613050895639237, guid: 0a183d37899f91a4093f0bb8452f51a2,
     type: 3}
-  spawnCountBeforeBoss: 10
-  spawnInterval: 3
+  enemy2Prefab: {fileID: 7076029219765752721, guid: 4486ac0a02292c44e838bf7f3cf87318,
+    type: 3}
+  boss2Prefab: {fileID: 445295799531992839, guid: 8ba472efd222e3845b34df424440af10,
+    type: 3}
+  enemy3Prefab: {fileID: 7076029219765752721, guid: 2c8bb3fa0bec3b34fb3e403cc3fb1dc5,
+    type: 3}
+  boss3Prefab: {fileID: 445295799531992839, guid: 1ea8968ba623ad3479f92cf11ebf285e,
+    type: 3}
+  counterBoss: 1
+  spawnInterval: 2
 --- !u!4 &473770343
 Transform:
   m_ObjectHideFlags: 0
@@ -1652,7 +1660,7 @@ Transform:
   m_GameObject: {fileID: 473770341}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.05, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0.05, z: 1.5}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -2470,7 +2478,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

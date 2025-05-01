@@ -1,10 +1,12 @@
 using UnityEngine;
 
-public class Monster : MonoBehaviour
+public class Enemy1 : MonoBehaviour
 {
-    public float speed = 1.5f;
-    public Transform target;
-    public Spawner spawner;
+    public float speed = 0.5f;
+    public float health = 10f;
+    public float damage = 1f;
+    private Transform target;
+    private Spawner spawner;
     
     Animator animator;
 
@@ -17,6 +19,15 @@ public class Monster : MonoBehaviour
     {
         this.target = target;
         this.spawner = spawner;
+    }
+
+    //임시로 데미지 주는 코드
+    void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            OnDamage(5f);
+        }
     }
 
     void FixedUpdate()
@@ -37,10 +48,20 @@ public class Monster : MonoBehaviour
                   
     }
 
-    // 테스트용: 충돌 시 제거
-    void OnCollisionEnter(Collision collision)
+    public void OnDamage(float damage)
     {
-        if (collision.collider.CompareTag("Bullet"))
+        health -= damage;
+        Debug.Log("Enemy1 attacked:" + health);
+        animator.SetTrigger("isHit");
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Bullet"))
         {
             Die();
         }
@@ -50,7 +71,7 @@ public class Monster : MonoBehaviour
     {
         if (spawner != null)
         {
-            spawner.OnSmallMonsterKilled();
+            spawner.OnEnemy1Slained();
         }
 
         Destroy(gameObject);
