@@ -11,19 +11,21 @@ public class ItemSpawner : MonoBehaviour
     [SerializeField] private GameObject flowerPrefab;
     [SerializeField] private GameObject sosPrefab;
     [SerializeField] private GameObject anotherPrefab;
-
+    [SerializeField] private AudioSource heartAudioSource;
+    //[SerializeField] private AudioSource bombAudioSource; 
+    
     private Player player;
     private Dictionary<string, GameObject> spawnedObjects = new Dictionary<string, GameObject>();
     private HashSet<string> collectedItems = new HashSet<string>();
-    private GameObject selectedObject; // Dragged Object
+    private GameObject selectedObject; // Dragged Object     
     private Vector3 dragOffset; // Offset for dragging
     private Plane dragPlane; // Plane for dragging
     public int health = 100; // Player's Health
-    private bool isDragging = false; // 드래그 상태를 추적하는 변수
+    private bool isDragging = false; // Tracking dragging state
 
     void Awake()
     {
-        // 씬에서 Player 스크립트를 찾아 자동으로 할당
+        // Find 'Player' script
         player = Object.FindFirstObjectByType<Player>();
     }
 
@@ -39,7 +41,7 @@ public class ItemSpawner : MonoBehaviour
             trackedImageManager.trackablesChanged.RemoveListener(OnTrackedImagesChanged);
     }
 
-    // AR Foundation 6.x용 이벤트 핸들러
+    
     private void OnTrackedImagesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
     {
         foreach (var addedImage in eventArgs.added)
@@ -100,7 +102,6 @@ public class ItemSpawner : MonoBehaviour
         {
             if (key == "sos")
             {
-                // Sos Prefab은 7초 뒤에만 삭제
                 StartCoroutine(DestroyAfterDelay(obj, 7f));
             }
             else
@@ -115,10 +116,9 @@ public class ItemSpawner : MonoBehaviour
     private IEnumerator DestroyAfterDelay(GameObject obj, float delay)
 {
     yield return new WaitForSeconds(delay);
-
-    // 오브젝트가 여전히 존재하고 활성화되어 있다면 삭제
+    
     if (obj != null)
-    {
+    {            
         Destroy(obj);
         Debug.Log($"Sos Prefab has been destroyed after {delay} seconds.");
     }
@@ -154,8 +154,17 @@ public class ItemSpawner : MonoBehaviour
                         if (kvp.Key == "sos" && hit.collider.gameObject == kvp.Value)
                         {
                             selectedObject = kvp.Value; // Sos Prefab 저장
-                            dragPlane = new Plane(Vector3.up, selectedObject.transform.position);
-                            dragOffset = selectedObject.transform.position - hit.point;
+
+                            // XR Origin(카메라)의 위치 가져오기
+                            Vector3 cameraPosition = Camera.main.transform.position;
+
+                            // sos Prefab 생성 위치와 카메라의 Z축 거리 계산
+                            float fixedZ = selectedObject.transform.position.z;
+
+                            // dragPlane을 XY 평면으로 설정 (Z축 고정)
+                            dragPlane = new Plane(Vector3.forward, new Vector3(0, 0, fixedZ));
+
+                            dragOffset = selectedObject.transform.position - hit.point; // 드래그 오프셋 계산
                             isDragging = true; // 드래그 시작
                             HandleObjectClick(kvp.Key);
                             break;
@@ -175,8 +184,11 @@ public class ItemSpawner : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(touch.position);
             if (dragPlane.Raycast(ray, out float enter))
             {
-                Vector3 hitPoint = ray.GetPoint(enter); // 평면과의 교차점
-                selectedObject.transform.position = hitPoint + dragOffset; // 오프셋 유지하며 이동
+                // 평면과의 교차점 계산
+                Vector3 hitPoint = ray.GetPoint(enter);
+
+                // 드래그 시작 시 계산된 dragOffset을 유지하며 오브젝트 이동
+                selectedObject.transform.position = hitPoint + dragOffset;
             }
         }
 
@@ -194,9 +206,17 @@ public class ItemSpawner : MonoBehaviour
         {
             case "Flower":
                 Debug.Log("Flower object clicked!");
-                player?.AddHealth(health);
-                Debug.Log("Player's health increased by 10.");
+                player?.AddHealth(health);                
                 collectedItems.Add("Flower");
+
+                if (heartAudioSource != null) {
+                    heartAudioSource.Play(); // Heart sound effect
+                }
+                else
+                {
+                    Debug.LogWarning("Heart AudioSource is not assigned in the inspector.");
+                }
+
                 Destroy(spawnedObjects["Flower"]);
                 spawnedObjects.Remove("Flower");
                 break;
