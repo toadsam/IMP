@@ -40,6 +40,10 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
         public float spawnDelay = 0f; // ✅ 무기 생성 지연 시간 (단위: 초)
 
+        // ✅ 무기 잠금 상태와 잠금 UI
+        public bool isUnlocked = false;
+        
+
     }
 
     // public SkillData skill; // ✅ 단일 스킬 예시
@@ -68,6 +72,8 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
     public Animator playerAnimator; // ✅ 플레이어 애니메이션 재생용
 
+    public GameObject lockImage; // ✅ 모든 무기에 공통으로 쓰일 잠금 이미지 (UI)
+
     public List<SkillData> skills = new List<SkillData>(); // ✅ 여러 스킬 등록 가능
 
     void Start()
@@ -79,6 +85,8 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         {
             skill.lastUsedTime = Time.time;
         }
+
+        UnlockWeapon(0);
     }
     void InitializeWeapons()
     {
@@ -98,6 +106,13 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
     IEnumerator ShootWeaponWithSpawnDelay(WeaponData currentWeapon)
     {
+
+        if (!currentWeapon.isUnlocked)
+        {
+            Debug.Log("해당 무기는 아직 잠겨 있습니다.");
+            yield break;
+        }
+
         // 애니메이션 및 상체 회전 (미리 실행)
         if (playerAnimator != null && !string.IsNullOrEmpty(currentWeapon.fireAnimationName))
         {
@@ -140,6 +155,21 @@ public class WeaponShooterWithJoystick : MonoBehaviour
         }
 
         Destroy(spawnedWeapon, 2f);
+    }
+
+    public void UnlockWeapon(int index)
+    {
+        if (index < 0 || index >= weapons.Count) return;
+
+        weapons[index].isUnlocked = true;
+
+        // 즉시 UI 갱신
+        if (weapons[index].isUnlocked == false)
+        {
+            lockImage.SetActive(true);
+        }
+
+        Debug.Log($"무기 {index} 잠금 해제됨!");
     }
 
 
@@ -201,33 +231,30 @@ public class WeaponShooterWithJoystick : MonoBehaviour
 
     void EquipCurrentWeapon()
     {
-        if (!weaponsSpawned) return; // 무기가 스폰되지 않았다면 실행하지 않음
+        if (!weaponsSpawned) return;
 
-        if (weaponHoldPoint == null)
-        {
-            Debug.LogWarning("Weapon Hold Point가 설정되지 않았습니다!");
-            return;
-        }
-
-        // 모든 무기 끄기
         foreach (var weaponObj in heldWeapons)
         {
             if (weaponObj != null)
                 weaponObj.SetActive(false);
         }
 
-        // 현재 무기만 켜기
         if (currentWeaponIndex >= 0 && currentWeaponIndex < heldWeapons.Count)
         {
             currentHeldWeapon = heldWeapons[currentWeaponIndex];
             if (currentHeldWeapon != null)
-            {
                 currentHeldWeapon.SetActive(true);
-            }
         }
-        UpdateWeaponUI(); // ✅ 이미지 갱신
 
+        WeaponData currentWeapon = weapons[currentWeaponIndex];
+
+        // ✅ 공통 잠금 이미지 ON/OFF
+        if (lockImage != null)
+            lockImage.SetActive(!currentWeapon.isUnlocked);
+
+        UpdateWeaponUI();
     }
+
     void ShootWeapon()
     {
         if (weapons.Count == 0 || arCamera == null || joystick == null)

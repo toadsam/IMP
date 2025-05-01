@@ -13,6 +13,9 @@ public class SkillCooldown : MonoBehaviour
     private bool isCharging = false;
     public bool isSkillReady => currentIndex >= fillImages.Length;
 
+
+
+
     void Start()
     {
         ResetUI();
