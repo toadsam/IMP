@@ -30507,7 +30507,6 @@ GameObject:
   - component: {fileID: 4911057012121422}
   - component: {fileID: 95448628147039386}
   - component: {fileID: -7491438213698659940}
-  - component: {fileID: 5998349119482326712}
   m_Layer: 0
   m_Name: Mon_00
   m_TagString: Untagged
@@ -30577,19 +30576,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5998349119482326712
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1818861082154570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 952eabd29f3fc0c49b0434931c8c2663, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BombAudioSource: {fileID: 0}
 --- !u!1 &1846604720013428
 GameObject:
   m_ObjectHideFlags: 0

@@ -127,10 +127,10 @@ public class ItemSpawner : MonoBehaviour
     private void SpawnOrUpdate(string key, GameObject prefab, Vector3 position, Quaternion rotation)
     {
         if (!spawnedObjects.ContainsKey(key))
-            spawnedObjects[key] = Instantiate(prefab, position, Quaternion.Euler(0, 90f, 0));
+            spawnedObjects[key] = Instantiate(prefab, position, Quaternion.Euler(0, 180, 0));
 
         var obj = spawnedObjects[key];
-        obj.transform.SetPositionAndRotation(position, Quaternion.Euler(0, 90f, 0));
+        obj.transform.SetPositionAndRotation(position, Quaternion.Euler(0, 180, 0));
         obj.SetActive(true);
     }
 
