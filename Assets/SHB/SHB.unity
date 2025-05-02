@@ -1554,7 +1554,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1147757057}
         m_TargetAssemblyTypeName: UseThis, Assembly-CSharp
-        m_MethodName: getPlaneInfo
+        m_MethodName: getInfo
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
