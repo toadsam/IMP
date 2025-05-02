@@ -3622,7 +3622,8 @@ MonoBehaviour:
   flowerPrefab: {fileID: 621584630249350254, guid: af9d1131c788d454fa7dae4544fa99d2,
     type: 3}
   sosPrefab: {fileID: 1429701101}
-  anotherPrefab: {fileID: 0}
+  shieldPrefab: {fileID: 3088383557153299344, guid: ffc8de4d04b5c64489e9a3a9e658e89d,
+    type: 3}
   heartAudioSource: {fileID: 1512282285}
   weaponSolved: {fileID: 363597891}
   health: 100
