@@ -24,7 +24,7 @@ public class Spawner : MonoBehaviour
 
     public float spawnInterval = 3f;
 
-    // ¸ó½ºÅÍ µå·¡±×ÇØ¼­ ´øÁö´Â ÄÚµå¸¦ À§ÇÑ º¯¼ö
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½å·¡ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµå¸¦ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     //private Enemy3 draggedEnemy;
     //private Vector3 dragStartPos;
     //private float dragStartTime;
@@ -33,6 +33,7 @@ public class Spawner : MonoBehaviour
     {
         enemy1Spawned = true;
         StartCoroutine(SpawnEnemy1());
+        player = GameObject.Find("Main Camera").transform;
     }
 
     void Update()
@@ -49,7 +50,7 @@ public class Spawner : MonoBehaviour
 
                     draggedEnemy.isBeingDragged = true;
 
-                    // ÄÚ·çÆ¾ Á¤Áö
+                    // ï¿½Ú·ï¿½Æ¾ ï¿½ï¿½ï¿½ï¿½
                     if (draggedEnemy.cloakingCoroutine != null)
                     {
                         StopCoroutine(draggedEnemy.cloakingCoroutine);
@@ -61,7 +62,7 @@ public class Spawner : MonoBehaviour
                 }
             }
         }
-        // µå·¡±× Áß À§Ä¡ ¾÷µ¥ÀÌÆ®
+        // ï¿½å·¡ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
         else if (Input.GetMouseButton(0) && draggedEnemy != null)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -70,7 +71,7 @@ public class Spawner : MonoBehaviour
                 draggedEnemy.dragTargetPos = hit.point;
             }
         }
-        // µå·¡±× Á¾·á ¡æ ÈÖµÎ¸£¸é ³¯¸²
+        // ï¿½å·¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ÖµÎ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         else if (Input.GetMouseButtonUp(0) && draggedEnemy != null)
         {
             Vector3 dragEndPos = Input.mousePosition;
@@ -82,10 +83,10 @@ public class Spawner : MonoBehaviour
 
             if (dragDistance > 100f && dragSpeed > 500f)
             {
-                // µå·¡±× ³¡³ª´Â À§Ä¡ÀÇ ¿ùµå ¹æÇâ ±¸ÇÏ±â
+                // ï¿½å·¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½
                 Ray ray = Camera.main.ScreenPointToRay(dragEndPos);
                 Vector3 worldDir = ray.direction;
-                worldDir.y = 0; // ¼öÆò ¹æÇâÀ¸·Î¸¸
+                worldDir.y = 0; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¸ï¿½
                 worldDir.Normalize();
                 draggedEnemy.Throw(worldDir);
             }
@@ -128,7 +129,6 @@ public class Spawner : MonoBehaviour
     void SpawnMonster(GameObject prefab)
     {
         Vector3 spawnPos = transform.position;  
-        spawnPos.y = player.position.y;
         GameObject monster = Instantiate(prefab, spawnPos, Quaternion.identity);
         if (monster.TryGetComponent<Enemy1>(out var enemy1))
         {

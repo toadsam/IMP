@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class StartButtonController : MonoBehaviour
 {
     public ARPlaneManager planeManager;
-    public GameObject scanInstructionUI; // "환경 스캔 중" UI
+    //public GameObject scanInstructionUI; // "환경 스캔 중" UI
     public UnityEvent OnScanFinished;
     public ARSession arSession;
 
@@ -15,7 +15,7 @@ public class StartButtonController : MonoBehaviour
 
     void Start()
     {
-        scanInstructionUI.SetActive(false);
+        //scanInstructionUI.SetActive(false);
         if (planeManager != null) planeManager.enabled = false;
     }
 
@@ -64,7 +64,7 @@ public class StartButtonController : MonoBehaviour
         Debug.Log("Scan started");
         isScanning = true;
 
-        if (scanInstructionUI != null) scanInstructionUI.SetActive(true);
+        //if (scanInstructionUI != null) scanInstructionUI.SetActive(true);
     }
 
     private void StopScan()
@@ -75,8 +75,8 @@ public class StartButtonController : MonoBehaviour
         // 필요한 처리 호출 (ex. 평면 고정, 바닥 및 벽 생성 등)
         FinishScan();
 
-        if (scanInstructionUI != null)
-            scanInstructionUI.SetActive(false);
+        //if (scanInstructionUI != null)
+        //    scanInstructionUI.SetActive(false);
 
         if (planeManager != null)
         {

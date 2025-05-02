@@ -5,10 +5,9 @@ public class MonsterSpawnerMover : MonoBehaviour
 {
     public UseThis useThisScript;  // 인스펙터에서 UseThis가 붙은 오브젝트 Drag&Drop
     public GameObject monsterSpawner;
-
+    public GameObject monsterSpawnerInstance;
     void Start()
     {
-        monsterSpawner = Instantiate(monsterSpawner, Vector3.zero, Quaternion.identity);
         StartCoroutine(MoveWhenGameStarts());
     }
 
@@ -18,6 +17,8 @@ public class MonsterSpawnerMover : MonoBehaviour
         {
             if (useThisScript != null && useThisScript.isGameStart)
             {
+                if (monsterSpawnerInstance == null) monsterSpawnerInstance = Instantiate(monsterSpawner, Vector3.zero, Quaternion.identity);
+
                 Debug.Log("move spawner!");
 
                 Vector3[] points = useThisScript.spawnerPoint;
@@ -28,7 +29,7 @@ public class MonsterSpawnerMover : MonoBehaviour
                     Vector3 targetPos = points[randomIndex];
 
                     Debug.Log($"Moving to: {targetPos}");
-                    monsterSpawner.transform.position = targetPos;
+                    monsterSpawnerInstance.transform.position = targetPos;
                 }
                 else
                 {

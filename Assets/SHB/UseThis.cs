@@ -13,25 +13,22 @@ public class UseThis : MonoBehaviour
     public GameObject[] wall;
     public Vector3[] spawnerPoint;
 
-    public Boolean isGameStart = false;
+    public bool isGameStart = false;
     public GameObject myCamera;
     public GameObject markerPrefab;
+
     public void getInfo()
     {
         floor = GameObject.FindWithTag("floor");
         if (floor == null) Debug.Log("in UseThis, can't find floor");
 
         floorCorners = GameObject.Find("AdjustmentSystem").GetComponent<AdjustmentSystem>().floorCornersFinal;
-        Debug.Log(floorCorners[0]);  //좌측 하단
-        Debug.Log(floorCorners[1]);  //우측 하단
-        Debug.Log(floorCorners[2]);  //우측 상단
-        Debug.Log(floorCorners[3]);  //좌측 하단
-
         wall = GameObject.FindGameObjectsWithTag("wall");
         if (wall == null) Debug.Log("in UseThis, can't find wall");
 
         float width = floorCorners[2].x - floorCorners[0].x;
         float length = floorCorners[2].z - floorCorners[0].z;
+
         setSpawnerPoint(floor.transform, width, length);
     }
 
@@ -41,10 +38,10 @@ public class UseThis : MonoBehaviour
         floorForward.y = 0;
         floorForward.Normalize();
 
+        // Step 1: 정면 벽 탐색
         int frontEdge = -1;
         float maxDot = float.MinValue;
 
-        // Step 1: 정면 벽 탐색
         for (int i = 0; i < 4; i++)
         {
             Vector3 a = floorCorners[i];
@@ -60,48 +57,63 @@ public class UseThis : MonoBehaviour
             }
         }
 
-        int leftEdge = (frontEdge + 3) % 4;
-        int rightEdge = (frontEdge + 1) % 4;
-
         List<Vector3> spawnList = new List<Vector3>();
 
-        // Step 2: 카메라가 바라보는 벽의 좌우 끝점을 기준으로 6개 배치
+        // Step 2: 정면 벽 기준 마커 6개 배치 (좌우 경계에서 약간 안쪽으로)
         Vector3 fa = floorCorners[frontEdge];
         Vector3 fb = floorCorners[(frontEdge + 1) % 4];
-        List<Vector3> createdMarkers = new List<Vector3>(); // 이미 생성된 마커들의 리스트
+        Vector3 edgeDir = (fb - fa).normalized;
+        float fullLength = Vector3.Distance(fa, fb);
+        float spacing = fullLength / 5f;
+
+        float sideTrim = spacing * 0.5f; // 좌우 가장자리 마커 안쪽으로 이동
+        Vector3 faAdjusted = fa + edgeDir * sideTrim;
+        Vector3 fbAdjusted = fb - edgeDir * sideTrim;
+
+        Vector3 forwardDir = (fa + fb) * 0.5f - floor.transform.position;
+        forwardDir.y = 0;
+        forwardDir.Normalize();
+        float inwardOffset = spacing * 0.2f;
+
+        List<Vector3> createdMarkers = new List<Vector3>();
 
         for (int i = 0; i < 6; i++)
         {
             float t = i / 5.0f;
-            Vector3 pos = Vector3.Lerp(fa, fb, t);
-            createdMarkers.Add(pos);
-            spawnList.Add(pos);
-            Instantiate(markerPrefab, pos, Quaternion.identity);
+            Vector3 basePos = Vector3.Lerp(faAdjusted, fbAdjusted, t);
+            Vector3 inwardPos = basePos - forwardDir * inwardOffset;
+
+            inwardPos.y += 1f;
+            createdMarkers.Add(inwardPos);
+            spawnList.Add(inwardPos);
+            // Instantiate(markerPrefab, inwardPos, Quaternion.identity);
         }
 
-        // Step 3: 마커 간 간격 계산
-        float markerSpacing = Vector3.Distance(createdMarkers[0], createdMarkers[1]);
+        // Step 3: 좌우 벽에 마커 하나씩 추가 (중앙 방향으로 살짝 당김)
+        float sideOffset = spacing * 2f;
 
-        // 좌측 벽 방향
+        // 좌측
         int leftA = (frontEdge + 3) % 4;
         int leftB = frontEdge;
         Vector3 leftDir = (floorCorners[leftA] - floorCorners[leftB]).normalized;
-        Vector3 leftPos = createdMarkers[0] + leftDir * markerSpacing;
+        Vector3 leftPos = createdMarkers[0] + leftDir * sideOffset;
+        Vector3 centerDirLeft = (floor.transform.position - leftPos).normalized;
+        leftPos += centerDirLeft * spacing * 0.2f;
+        leftPos.y += 1f;
         spawnList.Add(leftPos);
-        Instantiate(markerPrefab, leftPos, Quaternion.identity);
+        // Instantiate(markerPrefab, leftPos, Quaternion.identity);
 
-        // 우측 벽 방향
+        // 우측
         int rightA = (frontEdge + 2) % 4;
         int rightB = (frontEdge + 1) % 4;
         Vector3 rightDir = (floorCorners[rightA] - floorCorners[rightB]).normalized;
-        Vector3 rightPos = createdMarkers[5] + rightDir * markerSpacing;
+        Vector3 rightPos = createdMarkers[5] + rightDir * sideOffset;
+        Vector3 centerDirRight = (floor.transform.position - rightPos).normalized;
+        rightPos += centerDirRight * spacing * 0.2f;
+        rightPos.y += 1f;
         spawnList.Add(rightPos);
-        Instantiate(markerPrefab, rightPos, Quaternion.identity);
+        // Instantiate(markerPrefab, rightPos, Quaternion.identity);
 
         spawnerPoint = spawnList.ToArray();
     }
 }
-
-// 예시: 임의의 위치로 이동
-// int randIndex = Random.Range(0, 10);
-// monsterSpawner.transform.position = spawnPositions[randIndex];
