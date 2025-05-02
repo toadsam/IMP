@@ -14,9 +14,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/SHB/SHB.unity
     guid: 192e30329d99d03499df0478b29e3001
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Final.unity
     guid: 9b9eb1c12516b6645a9a7aae640141fe
+  - enabled: 1
+    path: Assets/KBW/Scenes/Final-KBW.unity
+    guid: b22f95ca47f57114d929484d234303b9
   m_configObjects:
     AR Foundation RemoteARFoundationRemoteLoaderSettings: {fileID: 11400000, guid: 106c844f45efc5642816759a7ca75e5a,
       type: 2}

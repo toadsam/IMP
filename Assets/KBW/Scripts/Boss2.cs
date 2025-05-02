@@ -25,20 +25,6 @@ public class Boss2 : MonoBehaviour
         this.spawner = spawner;
     }
 
-    //임시로 데미지 주는 코드
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            OnDamage(100f);
-        }
-    }
-
-    void FixedUpdate()
-    {
-
-    }
-
     IEnumerator Rage()
     {
         while (true)
@@ -88,15 +74,6 @@ public class Boss2 : MonoBehaviour
             
         }
     }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Bullet"))
-        {
-            Die();
-        }
-    }
-
     public void Die()
     {
         animator.SetBool("isDeath", true);

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 10f;        // 투사체 속도
+    public float speed = 1f;        // 투사체 속도
     public float lifetime = 5f; 
 
     private Transform target;
@@ -10,7 +10,7 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         Destroy(gameObject, lifetime); // 일정 시간 후 자동 삭제
-        target = GameObject.FindGameObjectWithTag("Player")?.transform;
+        target = GameObject.Find("Main Camera").transform;
     }
 
     void Update()

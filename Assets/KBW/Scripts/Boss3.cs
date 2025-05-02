@@ -26,26 +26,6 @@ public class Boss3 : MonoBehaviour
         this.spawner = spawner;
     }
 
-    //임시로 데미지 주는 코드
-    void Update()
-    {
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            OnDamage(5f);
-        }
-    }
-    void FixedUpdate()
-    {
-        
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Bullet"))
-        {
-            Die();
-        }
-    }
     void Die()
     {
         if (spawner != null)
@@ -73,7 +53,7 @@ public class Boss3 : MonoBehaviour
         float moveSpeed = 0.3f;       // 왕복 속도
         float sideRange = 0.3f;        // 좌우 이동 폭
 
-        Vector3 startPos = transform.position + new Vector3(0, 0, 0.1f);
+        Vector3 startPos = transform.position + new Vector3(0, 0, -0.1f);
 
         while (true)
         {

@@ -21,15 +21,6 @@ public class Enemy1 : MonoBehaviour
         this.spawner = spawner;
     }
 
-    //임시로 데미지 주는 코드
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            OnDamage(100f);
-        }
-    }
-
     void FixedUpdate()
     {
         transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
@@ -55,14 +46,6 @@ public class Enemy1 : MonoBehaviour
         if (health <= 0)
         {
             health = 0;
-            Die();
-        }
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Bullet"))
-        {
             Die();
         }
     }

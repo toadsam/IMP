@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7053218899015160446}
@@ -100,7 +100,7 @@ MonoBehaviour:
   speed: 0.01
   health: 100
   damage: 10
-  bullet1: {fileID: 1250246970215689443, guid: d32c35e913061ed4785dd79ac6e67c80, type: 3}
+  bullet1: {fileID: 8378503196372639160, guid: ba84eab4917ccab4fa104c0da7959217, type: 3}
 --- !u!1001 &7379333005504132501
 PrefabInstance:
   m_ObjectHideFlags: 0

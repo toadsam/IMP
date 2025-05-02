@@ -24,19 +24,6 @@ public class Enemy2 : MonoBehaviour
         this.spawner = spawner;
     }
 
-    //임시로 데미지 주는 코드
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            OnDamage(100f);
-        }
-    }
-    void FixedUpdate()
-    {
-       
-    }
-
     IEnumerator Run()
     {
         while (true)
@@ -56,14 +43,6 @@ public class Enemy2 : MonoBehaviour
                 yield return null;
             }            
         }              
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Bullet"))
-        {
-            Die();
-        }
     }
 
     void Die()

@@ -166,5 +166,5 @@ MonoBehaviour:
     type: 3}
   boss3Prefab: {fileID: 445295799531992839, guid: 1ea8968ba623ad3479f92cf11ebf285e,
     type: 3}
-  counterBoss: 1
+  counterBoss: 10
   spawnInterval: 3
