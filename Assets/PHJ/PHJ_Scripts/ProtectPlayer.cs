@@ -7,7 +7,7 @@ public class ProtectPlayer : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // 투사체의 Tag가 "Projectile"인지 확인
-        if (other.CompareTag("Monster"))
+        if (other.CompareTag("Monster") || other.CompareTag("Bullet"))
         {
             Debug.Log($"Monster {other.name} was blocked by the shield.");
             

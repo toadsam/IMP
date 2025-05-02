@@ -197,7 +197,7 @@ public class ItemSpawner : MonoBehaviour
     
     if (obj != null)
     {            
-        Destroy(obj);
+        //Destroy(obj);
         Debug.Log($"Sos Prefab has been destroyed after {delay} seconds.");
     }
 }

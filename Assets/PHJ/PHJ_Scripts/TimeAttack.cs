@@ -7,6 +7,7 @@ public class TimeAttack : MonoBehaviour
     [SerializeField] private float radius = 30f; // 폭발 반경
     [SerializeField] private float power = 30f; // 폭발 힘
     [SerializeField] private float lift = 10f; // 폭발로 인한 상승력
+    [SerializeField] private float destroyDelay = 2f; // 몬스터 제거 지연 시간
 
     void OnEnable()
     {
@@ -64,6 +65,9 @@ public class TimeAttack : MonoBehaviour
                 ForceMode.Impulse
             );
             Debug.Log($"Explosion force applied to {monster.name}.");
+
+            // 몬스터 제거 코루틴 시작
+            StartCoroutine(DestroyMonsterAfterDelay(monster.gameObject, destroyDelay));
         }
 
         if (BombAudioSource != null)
@@ -75,5 +79,12 @@ public class TimeAttack : MonoBehaviour
         {
             Debug.LogWarning("BombAudioSource is not assigned!");
         }
+    }
+
+    private IEnumerator DestroyMonsterAfterDelay(GameObject monster, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Debug.Log($"Destroying monster: {monster.name}");
+        Destroy(monster);
     }
 }
