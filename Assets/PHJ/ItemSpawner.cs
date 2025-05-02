@@ -12,11 +12,13 @@ public class ItemSpawner : MonoBehaviour
     [SerializeField] private GameObject sosPrefab;
     [SerializeField] private GameObject anotherPrefab;
     [SerializeField] private AudioSource heartAudioSource;
-    //[SerializeField] private AudioSource bombAudioSource; 
+    [SerializeField] private AudioSource weaponSolved;
+    
     
     private Player player;
     private Dictionary<string, GameObject> spawnedObjects = new Dictionary<string, GameObject>();
     private HashSet<string> collectedItems = new HashSet<string>();
+    private HashSet<string> processedImages = new HashSet<string>(); // 이미 처리된 이미지 추적
     private GameObject selectedObject; // Dragged Object     
     private Vector3 dragOffset; // Offset for dragging
     private Plane dragPlane; // Plane for dragging
@@ -61,7 +63,8 @@ public class ItemSpawner : MonoBehaviour
         {
             var trackedKey = trackedImage.referenceImage.name;
 
-            if (trackedKey == "sos") {
+            if (trackedKey == "sos")
+            {
                 return;
             }
             if (spawnedObjects.TryGetValue(trackedImage.referenceImage.name, out var obj))
@@ -86,6 +89,66 @@ public class ItemSpawner : MonoBehaviour
             case "sos":
                 SpawnOrUpdate(key, sosPrefab, trackedImage.transform.position, trackedImage.transform.rotation);
                 break;
+            case "magic":
+                {
+                    // 이미지가 처음 인식되었을 때만 처리
+                    if (!processedImages.Contains(key))
+                    {
+                        processedImages.Add(key); // 처리된 이미지로 추가
+
+                        if (weaponSolved != null)
+                        {
+                            weaponSolved.Play();
+                            Debug.Log("WeaponSolved audio played.");
+                        }
+                        else
+                        {
+                            Debug.LogWarning("WeaponSolved AudioSource is not assigned in the inspector.");
+                        }
+                    }                    
+                    // 여기다가 magic 무기를 잠금해제하는 코드 넣으면 됨
+                    break;
+                }
+            case "sword":
+                {
+                    // 이미지가 처음 인식되었을 때만 처리
+                    if (!processedImages.Contains(key))
+                    {
+                        processedImages.Add(key); // 처리된 이미지로 추가
+
+                        if (weaponSolved != null)
+                        {
+                            weaponSolved.Play();
+                            Debug.Log("WeaponSolved audio played.");
+                        }
+                        else
+                        {
+                            Debug.LogWarning("WeaponSolved AudioSource is not assigned in the inspector.");
+                        }
+                    }                    
+                    // 여기다가 sword 무기를 잠금해제하는 코드 넣으면 됨
+                    break;
+                }
+            case "gun":
+                {
+                    // 이미지가 처음 인식되었을 때만 처리
+                    if (!processedImages.Contains(key))
+                    {
+                        processedImages.Add(key); // 처리된 이미지로 추가
+
+                        if (weaponSolved != null)
+                        {
+                            weaponSolved.Play();
+                            Debug.Log("WeaponSolved audio played.");
+                        }
+                        else
+                        {
+                            Debug.LogWarning("WeaponSolved AudioSource is not assigned in the inspector.");
+                        }
+                    }                    
+                    // 여기다가 gun 무기를 잠금해제하는 코드 넣으면 됨
+                    break;
+                }
             case "AnotherImage":
                 SpawnOrUpdate(key, anotherPrefab, trackedImage.transform.position, trackedImage.transform.rotation);
                 break;
