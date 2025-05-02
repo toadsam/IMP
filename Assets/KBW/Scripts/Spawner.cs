@@ -24,6 +24,11 @@ public class Spawner : MonoBehaviour
 
     public float spawnInterval = 3f;
 
+    // 몬스터 드래그해서 던지는 코드를 위한 변수
+    //private Enemy3 draggedEnemy;
+    //private Vector3 dragStartPos;
+    //private float dragStartTime;
+
     void Start()
     {
         enemy1Spawned = true;
@@ -32,16 +37,73 @@ public class Spawner : MonoBehaviour
 
     void Update()
     {
-        
+        /*if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                if (hit.collider.TryGetComponent<Enemy3>(out var enemy))
+                {
+                    draggedEnemy = enemy;
+                    draggedEnemy.state = Enemy3State.Dragged;
+
+                    draggedEnemy.isBeingDragged = true;
+
+                    // 코루틴 정지
+                    if (draggedEnemy.cloakingCoroutine != null)
+                    {
+                        StopCoroutine(draggedEnemy.cloakingCoroutine);
+                        draggedEnemy.cloakingCoroutine = null;
+                    }
+
+                    dragStartPos = Input.mousePosition;
+                    dragStartTime = Time.time;
+                }
+            }
+        }
+        // 드래그 중 위치 업데이트
+        else if (Input.GetMouseButton(0) && draggedEnemy != null)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                draggedEnemy.dragTargetPos = hit.point;
+            }
+        }
+        // 드래그 종료 → 휘두르면 날림
+        else if (Input.GetMouseButtonUp(0) && draggedEnemy != null)
+        {
+            Vector3 dragEndPos = Input.mousePosition;
+            float dragDistance = Vector3.Distance(dragEndPos, dragStartPos);
+            float dragTime = Time.time - dragStartTime;
+            float dragSpeed = dragDistance / dragTime;
+
+            Debug.Log($"DragDistance: {dragDistance}, DragSpeed: {dragSpeed}");
+
+            if (dragDistance > 100f && dragSpeed > 500f)
+            {
+                // 드래그 끝나는 위치의 월드 방향 구하기
+                Ray ray = Camera.main.ScreenPointToRay(dragEndPos);
+                Vector3 worldDir = ray.direction;
+                worldDir.y = 0; // 수평 방향으로만
+                worldDir.Normalize();
+                draggedEnemy.Throw(worldDir);
+            }
+            else
+            {
+                draggedEnemy.state = Enemy3State.Normal;
+            }
+
+            draggedEnemy = null;
+        }*/
     }
 
     IEnumerator SpawnEnemy1()
     {
-        Debug.Log("Enemy1 start");
         while (enemy1Spawned)
         {
-            SpawnMonster(enemy1Prefab);
             yield return new WaitForSeconds(spawnInterval);
+            SpawnMonster(enemy1Prefab);            
         }
     }
 
@@ -49,8 +111,8 @@ public class Spawner : MonoBehaviour
     {
         while (enemy2Spawned)
         {
-            SpawnMonster(enemy2Prefab);
             yield return new WaitForSeconds(spawnInterval);
+            SpawnMonster(enemy2Prefab);            
         }
     }
 
@@ -58,14 +120,14 @@ public class Spawner : MonoBehaviour
     {
         while (enemy3Spawned)
         {
-            SpawnMonster(enemy3Prefab);
             yield return new WaitForSeconds(spawnInterval);
+            SpawnMonster(enemy3Prefab);            
         }
     }
 
     void SpawnMonster(GameObject prefab)
     {
-        Vector3 spawnPos = transform.position + new Vector3(player.position.x + Random.Range(-0.1f,0.1f), player.position.y, player.position.z);  
+        Vector3 spawnPos = transform.position;  
         spawnPos.y = player.position.y;
         GameObject monster = Instantiate(prefab, spawnPos, Quaternion.identity);
         if (monster.TryGetComponent<Enemy1>(out var enemy1))
@@ -91,7 +153,9 @@ public class Spawner : MonoBehaviour
         if (monster.TryGetComponent<Enemy3>(out var enemy3))
         {
             enemy3.Init(player, this);
-            StartCoroutine(Cloaking(monster));
+            StartCoroutine(CloakingEnemy(monster));
+            //Coroutine cloaking = StartCoroutine(CloakingEnemy(monster));
+            //enemy3.cloakingCoroutine = cloaking;
         }
 
         if (monster.TryGetComponent<Boss3>(out var boss3))
@@ -132,7 +196,7 @@ public class Spawner : MonoBehaviour
         Debug.Log("Enemy3:" + slainedMoster);
         if (slainedMoster >= counterBoss && !boss3Spawned)
         {
-            enemy3Spawned = false;
+            //enemy3Spawned = false;
             boss3Spawned = true;
             StartCoroutine(SpawnBoss3());
             slainedMoster = 0;
@@ -174,7 +238,7 @@ public class Spawner : MonoBehaviour
 
     IEnumerator SpawnBoss1()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         if(boss1Spawned)
         {
             Debug.Log("Warning1");
@@ -184,7 +248,7 @@ public class Spawner : MonoBehaviour
 
     IEnumerator SpawnBoss2()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         if (boss2Spawned)
         {
             Debug.Log("Warning2");
@@ -194,7 +258,7 @@ public class Spawner : MonoBehaviour
 
     IEnumerator SpawnBoss3()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         if(boss3Spawned)
         {
             Debug.Log("Warning3");
@@ -202,15 +266,14 @@ public class Spawner : MonoBehaviour
         }        
     }
 
-    IEnumerator Cloaking(GameObject cloakingEnemy)
+    IEnumerator CloakingEnemy(GameObject cloakingEnemy)
     {
         while (cloakingEnemy != null)
         {
             yield return new WaitForSeconds(2f);
             cloakingEnemy.SetActive(false);
-            yield return new WaitForSeconds(0.5f + Random.Range(-0.25f, 0.25f));
+            yield return new WaitForSeconds(1f + Random.Range(-0.5f, 0.5f));
             cloakingEnemy.SetActive(true);
         }        
     }
-
 }

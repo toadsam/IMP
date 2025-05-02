@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -5756495313270094841}
   m_Layer: 0
   m_Name: Enemy3
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -98,6 +98,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0.1
+  health: 5
+  damage: 5
+  state: 0
+  dragTargetPos: {x: 0, y: 0, z: 0}
+  throwPower: 1
 --- !u!1001 &8925391756054849558
 PrefabInstance:
   m_ObjectHideFlags: 0

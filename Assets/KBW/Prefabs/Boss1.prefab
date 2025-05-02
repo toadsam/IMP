@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -7575339454168130667}
   m_Layer: 0
   m_Name: Boss1
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,9 +97,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8f9328a160f8c44fa39404de4f499e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.5
+  speed: 0.01
   health: 100
   damage: 10
+  bullet1: {fileID: 1250246970215689443, guid: d32c35e913061ed4785dd79ac6e67c80, type: 3}
 --- !u!1001 &7379333005504132501
 PrefabInstance:
   m_ObjectHideFlags: 0
