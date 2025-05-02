@@ -24,6 +24,7 @@ public class ItemSpawner : MonoBehaviour
     private Plane dragPlane; // Plane for dragging
     public int health = 100; // Player's Health
     private bool isDragging = false; // Tracking dragging state
+    private bool isSosDragged = false;
 
     void Awake()
     {
@@ -81,7 +82,7 @@ public class ItemSpawner : MonoBehaviour
             return;
 
         // 드래그 중이거나 드래그가 완료된 상태에서는 위치를 갱신하지 않음
-        if (key == "sos" && isDragging)
+        if (key == "sos" && (isDragging || isSosDragged))
             return;
         if (key == "shield" && isDragging)
             return;
@@ -235,6 +236,7 @@ public class ItemSpawner : MonoBehaviour
 
                             dragOffset = selectedObject.transform.position - hit.point; // 드래그 오프셋 계산
                             isDragging = true; // 드래그 시작
+                            isSosDragged = true; // sos 드래그 상태 설정
                             HandleObjectClick(kvp.Key);
                             break;
                         }
@@ -283,7 +285,7 @@ public class ItemSpawner : MonoBehaviour
         if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
         {
             selectedObject = null; // 선택 해제
-            //isDragging = false; // 드래그 종료
+            isDragging = false; // 드래그 종료
         }
     }
 
