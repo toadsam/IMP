@@ -13,6 +13,8 @@ public class AdjustmentSystem : MonoBehaviour
     public GameObject StartButtonController;
     public GameObject myCamera;
 
+    public GameObject monsterSpawner;
+
     public UnityEvent allSetEnd;
 
     public Vector3[] floorCornersFinal = new Vector3[4];
@@ -107,6 +109,9 @@ public class AdjustmentSystem : MonoBehaviour
         //StartButtonController.GetComponent<StartButtonController>().destroyAllPlane();
         floorCornersFinal = floorCorners;
 
+        // 7. 몬스터스포너 생성은 useThis.cs에서 처리하도록 하겠다.
+        // SpawnMonsterSpawners(floor.transform, width, length);
+
         sendAllSetEnd();
     }
 
@@ -135,7 +140,6 @@ public class AdjustmentSystem : MonoBehaviour
             wall.transform.rotation = Quaternion.LookRotation(directionToLook);
         }
     }
-
 
     public void sendAllSetEnd()
     {

@@ -665,6 +665,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4759295107362046416, guid: a904c82028dd3426aa6f5d4bd5db3e1c,
         type: 3}
+      propertyPath: m_text
+      value: Into Monster Point
+      objectReference: {fileID: 0}
+    - target: {fileID: 4759295107362046416, guid: a904c82028dd3426aa6f5d4bd5db3e1c,
+        type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
       objectReference: {fileID: 0}
@@ -1025,7 +1030,58 @@ MonoBehaviour:
   floor: {fileID: 0}
   floorCorners: []
   wall: []
+  spawnerPoint: []
   isGameStart: 0
+  myCamera: {fileID: 1400146306}
+  markerPrefab: {fileID: 2014905760626959085, guid: 5c02f12b50f508442bd4c1b0e2d4b74b,
+    type: 3}
+--- !u!1 &1174271720
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1174271722}
+  - component: {fileID: 1174271721}
+  m_Layer: 0
+  m_Name: MonsterSpawnerMover
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1174271721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174271720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b468ee158be6f8041aabd103424620bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useThisScript: {fileID: 1147757057}
+  monsterSpawner: {fileID: 511283631388253192, guid: 4eef8011e193a3e4dbda99b5337b1d61,
+    type: 3}
+--- !u!4 &1174271722
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174271720}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1367162375
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1549,12 +1605,14 @@ MonoBehaviour:
     type: 3}
   StartButtonController: {fileID: 1957427919}
   myCamera: {fileID: 1400146306}
+  monsterSpawner: {fileID: 2014905760626959085, guid: 5c02f12b50f508442bd4c1b0e2d4b74b,
+    type: 3}
   allSetEnd:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1147757057}
         m_TargetAssemblyTypeName: UseThis, Assembly-CSharp
-        m_MethodName: getPlaneInfo
+        m_MethodName: getInfo
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2206,3 +2264,4 @@ SceneRoots:
   - {fileID: 714312297}
   - {fileID: 1671000771}
   - {fileID: 1147757056}
+  - {fileID: 1174271722}
