@@ -10,7 +10,7 @@ public class ItemSpawner : MonoBehaviour
     [SerializeField] private ARTrackedImageManager trackedImageManager;
     [SerializeField] private GameObject flowerPrefab;
     [SerializeField] private GameObject sosPrefab;
-    [SerializeField] private GameObject anotherPrefab;
+    [SerializeField] private GameObject shieldPrefab;
     [SerializeField] private AudioSource heartAudioSource;
     [SerializeField] private AudioSource weaponSolved;
     
@@ -67,6 +67,10 @@ public class ItemSpawner : MonoBehaviour
             {
                 return;
             }
+            if (trackedKey == "shield")
+            {
+                return;
+            }
             if (spawnedObjects.TryGetValue(trackedImage.referenceImage.name, out var obj))
                 obj.SetActive(false);
             return;
@@ -78,6 +82,8 @@ public class ItemSpawner : MonoBehaviour
 
         // 드래그 중이거나 드래그가 완료된 상태에서는 위치를 갱신하지 않음
         if (key == "sos" && isDragging)
+            return;
+        if (key == "shield" && isDragging)
             return;
 
         // 이미지 이름별로 올바른 프리팹 생성/갱신
@@ -149,8 +155,8 @@ public class ItemSpawner : MonoBehaviour
                     // 여기다가 gun 무기를 잠금해제하는 코드 넣으면 됨
                     break;
                 }
-            case "AnotherImage":
-                SpawnOrUpdate(key, anotherPrefab, trackedImage.transform.position, trackedImage.transform.rotation);
+            case "shield":
+                SpawnOrUpdate(key, shieldPrefab, trackedImage.transform.position, trackedImage.transform.rotation);
                 break;
             default:
                 Debug.LogWarning($"Unhandled tracked image: {key}");
@@ -232,6 +238,24 @@ public class ItemSpawner : MonoBehaviour
                             HandleObjectClick(kvp.Key);
                             break;
                         }
+                        if (kvp.Key == "shield" && hit.collider.gameObject == kvp.Value)
+                        {
+                            selectedObject = kvp.Value; // Sos Prefab 저장
+
+                            // XR Origin(카메라)의 위치 가져오기
+                            Vector3 cameraPosition = Camera.main.transform.position;
+
+                            // sos Prefab 생성 위치와 카메라의 Z축 거리 계산
+                            float fixedZ = selectedObject.transform.position.z;
+
+                            // dragPlane을 XY 평면으로 설정 (Z축 고정)
+                            dragPlane = new Plane(Vector3.forward, new Vector3(0, 0, fixedZ));
+
+                            dragOffset = selectedObject.transform.position - hit.point; // 드래그 오프셋 계산
+                            isDragging = true; // 드래그 시작
+                            HandleObjectClick(kvp.Key);
+                            break;
+                        }
 
                         // 다른 오브젝트는 클릭 동작 처리
                         HandleObjectClick(kvp.Key);
@@ -292,12 +316,12 @@ public class ItemSpawner : MonoBehaviour
                 //spawnedObjects.Remove("sos");
                 break;
 
-            case "AnotherImage":
-                Debug.Log("AnotherImage object clicked!");
+            case "shield":
+                Debug.Log("shield object clicked!");
                 // 다른 이미지 전용 동작 추가 가능
-                collectedItems.Add("AnotherImage");
-                Destroy(spawnedObjects["AnotherImage"]);
-                spawnedObjects.Remove("AnotherImage");
+                //collectedItems.Add("AnotherImage");
+                //Destroy(spawnedObjects["AnotherImage"]);
+                //spawnedObjects.Remove("AnotherImage");
                 break;
 
             default:
