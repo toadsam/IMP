@@ -26,6 +26,8 @@ public class ItemSpawner : MonoBehaviour
     private bool isDragging = false; // Tracking dragging state
     private bool isSosDragged = false;
 
+    public WeaponShooterWithJoystick weaponshooterwithJoystick;
+
     void Awake()
     {
         // Find 'Player' script
@@ -112,7 +114,9 @@ public class ItemSpawner : MonoBehaviour
                         {
                             Debug.LogWarning("WeaponSolved AudioSource is not assigned in the inspector.");
                         }
-                    }                    
+                    }
+                    
+                    weaponshooterwithJoystick.UnlockWeapon(1);
                     // 여기다가 magic 무기를 잠금해제하는 코드 넣으면 됨
                     break;
                 }
@@ -132,7 +136,9 @@ public class ItemSpawner : MonoBehaviour
                         {
                             Debug.LogWarning("WeaponSolved AudioSource is not assigned in the inspector.");
                         }
-                    }                    
+                    }
+                    
+                    weaponshooterwithJoystick.UnlockWeapon(2);
                     // 여기다가 sword 무기를 잠금해제하는 코드 넣으면 됨
                     break;
                 }
@@ -152,7 +158,9 @@ public class ItemSpawner : MonoBehaviour
                         {
                             Debug.LogWarning("WeaponSolved AudioSource is not assigned in the inspector.");
                         }
-                    }                    
+                    }
+                    
+                    weaponshooterwithJoystick.UnlockWeapon(3);
                     // 여기다가 gun 무기를 잠금해제하는 코드 넣으면 됨
                     break;
                 }
@@ -299,6 +307,7 @@ public class ItemSpawner : MonoBehaviour
                 collectedItems.Add("Flower");
 
                 if (heartAudioSource != null) {
+                    weaponshooterwithJoystick.UnlockWeapon(3);
                     heartAudioSource.Play(); // Heart sound effect
                 }
                 else
