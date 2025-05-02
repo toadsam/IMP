@@ -27,9 +27,9 @@ public class Enemy2 : MonoBehaviour
     //임시로 데미지 주는 코드
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            OnDamage(5f);
+            OnDamage(100f);
         }
     }
     void FixedUpdate()
@@ -41,6 +41,7 @@ public class Enemy2 : MonoBehaviour
     {
         while (true)
         {
+            transform.LookAt(target);
             animator.SetBool("isRun", false);
             yield return new WaitForSeconds(1.5f);
 
@@ -67,21 +68,21 @@ public class Enemy2 : MonoBehaviour
 
     void Die()
     {
+        animator.SetBool("isDeath", true);
         if (spawner != null)
         {
             spawner.OnEnemy2Slained();
         }
-
-        Destroy(gameObject);
+        Destroy(gameObject,1f);
     }
 
     public void OnDamage(float damage)
     {
         health -= damage;
-        Debug.Log("Enemy1 attacked:" + health);
-        animator.SetTrigger("isHit");
+        Debug.Log("Enemy2 attacked:" + health);
         if (health <= 0)
         {
+            health = 0;
             Die();
         }
     }

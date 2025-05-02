@@ -24,9 +24,9 @@ public class Enemy1 : MonoBehaviour
     //임시로 데미지 주는 코드
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            OnDamage(5f);
+            OnDamage(100f);
         }
     }
 
@@ -52,9 +52,9 @@ public class Enemy1 : MonoBehaviour
     {
         health -= damage;
         Debug.Log("Enemy1 attacked:" + health);
-        animator.SetTrigger("isHit");
         if (health <= 0)
         {
+            health = 0;
             Die();
         }
     }
@@ -69,11 +69,11 @@ public class Enemy1 : MonoBehaviour
 
     void Die()
     {
+        animator.SetBool("isDeath", true);
         if (spawner != null)
         {
             spawner.OnEnemy1Slained();
         }
-
-        Destroy(gameObject);
+        Destroy(gameObject, 1f);
     }
 }

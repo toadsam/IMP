@@ -15,6 +15,10 @@ EditorBuildSettings:
     path: Assets/SHB/SHB.unity
     guid: 192e30329d99d03499df0478b29e3001
   m_configObjects:
+    AR Foundation RemoteARFoundationRemoteLoaderSettings: {fileID: 11400000, guid: 106c844f45efc5642816759a7ca75e5a,
+      type: 2}
+    AR Foundation RemoteARFoundationRemoteSessionRecordsData: {fileID: 11400000, guid: a7521a2ff331b334a9be6cff6db5b7f1,
+      type: 2}
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 6ee72d15cf39dd748a13eac57397b9af,
       type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 0465d33c6aee55f44b0237db8b0e0259,
