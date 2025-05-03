@@ -7,8 +7,8 @@ using UnityEngine.Events;
 public class AdjustmentSystem : MonoBehaviour
 {
     public ARPlaneManager planeManager;
-    public GameObject floorPrefab; // 직사각형 바닥을 만들 프리팹 (ex: Plane)
-    public GameObject wallPrefab;  // 벽을 만들 프리팹 (ex: Wall)
+    public GameObject floorPrefab; // Prefab to instantiate the rectangular floor
+    public GameObject wallPrefab;  // Prefab to instantiate the surrounding walls
 
     public GameObject StartButtonController;
     public GameObject myCamera;
@@ -17,7 +17,7 @@ public class AdjustmentSystem : MonoBehaviour
 
     public UnityEvent allSetEnd;
 
-    public Vector3[] floorCornersFinal = new Vector3[4];
+    public Vector3[] floorCornersFinal = new Vector3[4]; // Stores final floor corners for reference
 
     public void HandleScanFinished()
     {
@@ -25,7 +25,7 @@ public class AdjustmentSystem : MonoBehaviour
 
         List<Vector3> allWorldPoints = new List<Vector3>();
 
-        // 1. 바닥 평면들만 모으고, 각 boundary 경계점을 월드 좌표로 변환
+        // 1. Collect only horizontal floor planes and convert boundary points to world space
         foreach (var plane in planeManager.trackables)
         {
             if (plane.alignment == PlaneAlignment.HorizontalUp)
@@ -40,14 +40,14 @@ public class AdjustmentSystem : MonoBehaviour
             plane.gameObject.SetActive(true);
         }
 
-        // 2. 좌표가 하나도 없다면 종료
+        // 2. If no detected points, exit early
         if (allWorldPoints.Count == 0)
         {
             Debug.LogWarning("No detection plane");
             return;
         }
 
-        // 3. 최소/최대 X, Z값 계산
+        // 3. Find min/max X, Z, and min Y to define the rectangular floor boundary
         float minX = float.MaxValue;
         float maxX = float.MinValue;
         float minZ = float.MaxValue;
@@ -63,7 +63,7 @@ public class AdjustmentSystem : MonoBehaviour
             if (point.y < minY) minY = point.y;
         }
 
-        // 추가: 카메라 좌표 포함
+        // Include camera position to prevent floor from being too small
         Vector3 cameraPos = myCamera.transform.position;
 
         if (cameraPos.x + 1f > maxX) maxX = cameraPos.x + 1f;
@@ -72,7 +72,7 @@ public class AdjustmentSystem : MonoBehaviour
         if (cameraPos.z + 1f > maxZ) maxZ = cameraPos.z + 1f;
         if (cameraPos.z - 1f < minZ) minZ = cameraPos.z - 1f;
 
-        // 4. 중심과 크기 계산
+        // 4. Calculate center and size of the rectangular floor
         float centerX = (minX + maxX) / 2f;
         float centerZ = (minZ + maxZ) / 2f;
         float width = maxX - minX;
@@ -80,62 +80,64 @@ public class AdjustmentSystem : MonoBehaviour
 
         Vector3 center = new Vector3(centerX, minY, centerZ);
 
-        // 5. 바닥 GameObject 생성 (프리팹 활용)
+        // 5. Instantiate the floor using the prefab
         GameObject floor = Instantiate(floorPrefab, center, Quaternion.identity);
 
-        // Plane은 기본적으로 10x10 단위라, 실제 크기에 맞게 스케일 조정 필요
+        // Scale the floor: default Plane in Unity is 10x10 units
         floor.transform.localScale = new Vector3(width / 10f, 1f, length / 10f);
 
-        // 바닥의 각 꼭짓점 좌표 출력
+        // Calculate the 4 corners of the floor
         Vector3[] floorCorners = new Vector3[4];
-        floorCorners[0] = new Vector3(minX, minY, minZ);  // 좌측 하단
-        floorCorners[1] = new Vector3(maxX, minY, minZ);  // 우측 하단
-        floorCorners[2] = new Vector3(maxX, minY, maxZ);  // 우측 상단
-        floorCorners[3] = new Vector3(minX, minY, maxZ);  // 좌측 상단
+        floorCorners[0] = new Vector3(minX, minY, minZ);  // Bottom-left
+        floorCorners[1] = new Vector3(maxX, minY, minZ);  // Bottom-right
+        floorCorners[2] = new Vector3(maxX, minY, maxZ);  // Top-right
+        floorCorners[3] = new Vector3(minX, minY, maxZ);  // Top-left
 
         for (int i = 0; i < floorCorners.Length; i++)
         {
             Debug.Log($"Corner {i}: {floorCorners[i]}");
         }
 
-        // 6. 벽 만들기
-        CreateWall(floorCorners[0], floorCorners[1]);  // 바닥의 좌측 하단과 우측 하단
-        CreateWall(floorCorners[1], floorCorners[2]);  // 바닥의 우측 하단과 우측 상단
-        CreateWall(floorCorners[2], floorCorners[3]);  // 바닥의 우측 상단과 좌측 상단
-        CreateWall(floorCorners[3], floorCorners[0]);  // 바닥의 좌측 상단과 좌측 하단
+        // 6. Create 4 walls along the edges of the floor
+        CreateWall(floorCorners[0], floorCorners[1]);  // Bottom edge
+        CreateWall(floorCorners[1], floorCorners[2]);  // Right edge
+        CreateWall(floorCorners[2], floorCorners[3]);  // Top edge
+        CreateWall(floorCorners[3], floorCorners[0]);  // Left edge
 
         Debug.Log($"End make plane. Center: {center}, size: {width} x {length}");
 
-        //StartButtonController.GetComponent<StartButtonController>().destroyAllPlane();
+        // Store the final corner positions for external use
         floorCornersFinal = floorCorners;
 
-        // 7. 몬스터스포너 생성은 useThis.cs에서 처리하도록 하겠다.
+        // 7. Monster spawner instantiation is handled by UseThis.cs
         // SpawnMonsterSpawners(floor.transform, width, length);
+
+        // Optional: Scale the floor 1.5x (as final touch)
         floor.transform.localScale *= 1.5f;
+
         sendAllSetEnd();
     }
 
-    // 벽을 생성하는 함수
+    // Creates a vertical wall between two floor corner points
     void CreateWall(Vector3 start, Vector3 end)
     {
-        // 벽의 크기와 위치 계산
         Vector3 direction = end - start;
         float distance = direction.magnitude;
         Vector3 midPoint = (start + end) / 2;
 
-        // 벽 프리팹 인스턴스화
+        // Instantiate the wall prefab at midpoint
         GameObject wall = Instantiate(wallPrefab, midPoint, Quaternion.identity);
 
-        // 벽의 크기 설정
-        wall.transform.localScale = new Vector3(0.01f, 1f, distance); // 벽 높이는 1, 길이는 start와 end 사이의 거리
+        // Set wall size: thin in X, fixed height in Y, and length in Z
+        wall.transform.localScale = new Vector3(0.01f, 1f, distance);
 
-        // 벽의 Y 위치 설정 (바닥 위에 정확히 배치)
+        // Raise wall's Y so it's placed above floor
         wall.transform.position = new Vector3(midPoint.x, Mathf.Min(start.y, end.y) + wall.transform.localScale.y / 2f, midPoint.z);
 
-        // 벽이 시작점에서 끝점을 향하도록 회전 (y축 회전만 적용)
+        // Rotate wall to face the end point (horizontal rotation only)
         Vector3 directionToLook = end - start;
-        directionToLook.y = 0;  // y축 회전만 고려
-        if (directionToLook != Vector3.zero)  // 방향이 0벡터가 아닐 때만 회전
+        directionToLook.y = 0;
+        if (directionToLook != Vector3.zero)
         {
             wall.transform.rotation = Quaternion.LookRotation(directionToLook);
         }
@@ -144,6 +146,6 @@ public class AdjustmentSystem : MonoBehaviour
     public void sendAllSetEnd()
     {
         Debug.Log("All setting End!!!!!");
-        allSetEnd?.Invoke();
+        allSetEnd?.Invoke(); // Notify others that setup is complete
     }
 }
