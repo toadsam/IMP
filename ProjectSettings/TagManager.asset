@@ -9,6 +9,7 @@ TagManager:
   - floor
   - spawner
   - Bullet
+  - Boss
   layers:
   - Default
   - TransparentFX

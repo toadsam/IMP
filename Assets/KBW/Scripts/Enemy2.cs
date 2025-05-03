@@ -10,11 +10,13 @@ public class Enemy2 : MonoBehaviour
     private Transform target;
     private Spawner spawner;
 
+    AudioSource enemySound;
     Animator animator;
 
     void Start()
     {
         animator = GetComponentInChildren<Animator>();
+        enemySound = GetComponentInChildren<AudioSource>();
         StartCoroutine(Run());
     }
 
@@ -48,6 +50,7 @@ public class Enemy2 : MonoBehaviour
     void Die()
     {
         animator.SetBool("isDeath", true);
+        enemySound.Play();
         if (spawner != null)
         {
             spawner.OnEnemy2Slained();

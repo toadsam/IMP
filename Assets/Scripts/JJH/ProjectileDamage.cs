@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ProjectileDamage : MonoBehaviour
 {
-    public GameObject enemy1; // 적에게 데미지를 주기 위한 함수 불러오기(김병욱) 
+    public GameObject enemy1; // 적에게 데미지를 주기 위한 함수 불러오기
     public bool isDestroy;
     public int damage = 10;
 

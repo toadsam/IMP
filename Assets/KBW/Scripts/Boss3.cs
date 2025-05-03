@@ -12,11 +12,13 @@ public class Boss3 : MonoBehaviour
 
     private Rigidbody rb;
     private Animator animator;
+    AudioSource bossDeath;
 
     void Start()
     {
         animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
+        bossDeath = GetComponent<AudioSource>();
         StartCoroutine(SideRun());
     }
 
@@ -28,10 +30,12 @@ public class Boss3 : MonoBehaviour
 
     void Die()
     {
+        animator.SetBool("isDeath", true);
+        bossDeath.Play();
+
         if (spawner != null)
         {
             spawner.OnBoss3Slained();
-            animator.SetBool("isDeath", true);
         }
 
         Destroy(gameObject, 1f);
@@ -51,9 +55,9 @@ public class Boss3 : MonoBehaviour
     IEnumerator SideRun()
     {
         float moveSpeed = 0.3f;       // ¿Õº¹ ¼Óµµ
-        float sideRange = 0.3f;        // ÁÂ¿ì ÀÌµ¿ Æø
+        float sideRange = 0.5f;        // ÁÂ¿ì ÀÌµ¿ Æø
 
-        Vector3 startPos = transform.position + new Vector3(0, 0, -0.1f);
+        Vector3 startPos = transform.position + new Vector3(0, 0, -0.2f);
 
         while (true)
         {

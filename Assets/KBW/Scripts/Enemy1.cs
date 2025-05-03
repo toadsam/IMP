@@ -7,12 +7,14 @@ public class Enemy1 : MonoBehaviour
     public float damage = 1f;
     private Transform target;
     private Spawner spawner;
-    
+
+    AudioSource enemySound;
     Animator animator;
 
     void Start()
     {
         animator = GetComponentInChildren<Animator>();
+        enemySound = GetComponentInChildren<AudioSource>();
     }
 
     public void Init(Transform target, Spawner spawner)
@@ -53,6 +55,7 @@ public class Enemy1 : MonoBehaviour
     void Die()
     {
         animator.SetBool("isDeath", true);
+        enemySound.Play();
         if (spawner != null)
         {
             spawner.OnEnemy1Slained();

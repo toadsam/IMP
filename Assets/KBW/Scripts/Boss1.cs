@@ -9,6 +9,9 @@ public class Boss1 : MonoBehaviour
     public float damage = 10f;
     public GameObject bullet1;
 
+    public AudioSource bossDeath;
+    public AudioSource shoot;
+
     private Transform target;
     private Spawner spawner;
 
@@ -29,6 +32,7 @@ public class Boss1 : MonoBehaviour
     void Die()
     {
         animator.SetBool("isDeath", true);
+        bossDeath.Play();
         if (spawner != null)
         {
             spawner.OnBoss1Slained();
@@ -65,6 +69,7 @@ public class Boss1 : MonoBehaviour
 
                 Vector3 offset = new Vector3(-0.05f, 0.05f, 0);
 
+                shoot.Play();   
                 Instantiate(bullet1, transform.position + offset, rotation);
             }
 

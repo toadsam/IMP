@@ -6572,6 +6572,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8281514540413846307, guid: f2029369446a14d439d8c9e19d1849db,
         type: 3}
+      propertyPath: lift
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8281514540413846307, guid: f2029369446a14d439d8c9e19d1849db,
+        type: 3}
+      propertyPath: power
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8281514540413846307, guid: f2029369446a14d439d8c9e19d1849db,
+        type: 3}
       propertyPath: BombAudioSource
       value: 
       objectReference: {fileID: 1598591402}

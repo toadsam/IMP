@@ -6,7 +6,10 @@ public class Boss2 : MonoBehaviour
     public float speed = 0.1f;
     public float rageSpeed = 0.5f;
     public float health = 200f;
-    public float damage = 1000f; //공격하진 않고 플레이어에게 다가오면 즉사
+    public float damage = 100f;
+
+    public AudioSource bossDeath;
+    public AudioSource bossRage;
 
     private Transform target;
     private Spawner spawner;
@@ -54,6 +57,8 @@ public class Boss2 : MonoBehaviour
             animator.SetBool("isWalk", false);
             animator.SetBool("isRage", true);
 
+            bossRage.Play();
+
             yield return new WaitForSeconds(1.6f);
 
             animator.SetBool("isRage", false);
@@ -77,6 +82,8 @@ public class Boss2 : MonoBehaviour
     public void Die()
     {
         animator.SetBool("isDeath", true);
+        bossDeath.Play();
+
         if (spawner != null)
         {
             spawner.OnBoss2Slained();
