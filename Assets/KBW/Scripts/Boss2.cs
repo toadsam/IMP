@@ -3,37 +3,40 @@ using UnityEngine;
 
 public class Boss2 : MonoBehaviour
 {
-    public float speed = 0.1f;
-    public float rageSpeed = 0.5f;
-    public float health = 200f;
-    public float damage = 100f;
+    public float speed = 0.1f;             // Normal walking speed
+    public float rageSpeed = 0.5f;         // Speed during rage charge
+    public float health = 200f;            // Boss health
+    public float damage = 100f;            // Damage dealt to player on collision
 
-    public AudioSource bossDeath;
-    public AudioSource bossRage;
+    public AudioSource bossDeath;          // Sound played on death
+    public AudioSource bossRage;           // Sound played when entering rage mode
 
-    private Transform target;
-    private Spawner spawner;
+    private Transform target;              // Player target
+    private Spawner spawner;               // Reference to spawner for callbacks
 
-    Animator animator;
+    Animator animator;                     // Animator for animation control
 
     void Start()
     {
         animator = GetComponentInChildren<Animator>();
-        StartCoroutine(Rage());        
+        StartCoroutine(Rage());            // Start the boss behavior loop
     }
 
+    // Initialize target and spawner from Spawner script
     public void Init(Transform target, Spawner spawner)
     {
         this.target = target;
         this.spawner = spawner;
     }
 
+    // Coroutine controlling rage/walk/charge loop
     IEnumerator Rage()
     {
         while (true)
         {
             transform.LookAt(target);
 
+            // Idle phase
             animator.SetBool("isWalk", false);
             animator.SetBool("isRun", false);
             animator.SetBool("isRage", false);
@@ -41,6 +44,7 @@ public class Boss2 : MonoBehaviour
 
             yield return new WaitForSeconds(2f);
 
+            // Walk phase
             animator.SetBool("isIdle", false);
             animator.SetBool("isWalk", true);
 
@@ -54,13 +58,15 @@ public class Boss2 : MonoBehaviour
                 yield return null;
             }
 
+            // Rage animation phase
             animator.SetBool("isWalk", false);
             animator.SetBool("isRage", true);
 
-            bossRage.Play();
+            bossRage.Play(); // Play rage sound
 
             yield return new WaitForSeconds(1.6f);
 
+            // Charge phase
             animator.SetBool("isRage", false);
             animator.SetBool("isRun", true);
 
@@ -74,11 +80,13 @@ public class Boss2 : MonoBehaviour
                 yield return null;
             }
 
+            // Back to idle
             animator.SetBool("isRun", false);
             animator.SetBool("isIdle", true);
-            
         }
     }
+
+    // Called when boss dies
     public void Die()
     {
         animator.SetBool("isDeath", true);
@@ -86,21 +94,26 @@ public class Boss2 : MonoBehaviour
 
         if (spawner != null)
         {
-            spawner.OnBoss2Slained();
+            spawner.OnBoss2Slained();  // Notify spawner
         }
-        Destroy(gameObject, 1f);
+
+        Destroy(gameObject, 1f);       // Destroy with short delay
     }
 
+    // Called when boss takes damage
     public void OnDamage(float damage)
     {
         health -= damage;
         Debug.Log("Boss2 attacked:" + health);
+
         if (health <= 0)
         {
             health = 0;
             Die();
         }
     }
+
+    // Damage player on contact
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -108,23 +121,9 @@ public class Boss2 : MonoBehaviour
             PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage((int)damage); // 데미지 적용
-                Debug.Log("플레이어에게 데미지를 주었습니다.");
+                playerHealth.TakeDamage((int)damage); // Apply damage to player
+                Debug.Log("Dealt damage to the player.");
             }
-        }
-
-        if (other.CompareTag("Shield"))
-        {
-            Rigidbody rb = GetComponent<Rigidbody>();
-
-            Debug.Log("Boss2 detect Shield");
-            if (rb != null)
-            {
-                Vector3 pushDirection = (transform.position - transform.position).normalized;
-                float pushForce = 100f; // 밀어내는 힘의 크기 조절 가능
-                rb.AddForce(pushDirection * pushForce, ForceMode.Impulse);
-            }
-            
         }
     }
 }

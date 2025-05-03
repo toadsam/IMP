@@ -3,16 +3,17 @@ using UnityEngine;
 
 public class ProjectileDamage : MonoBehaviour
 {
-    public bool isDestroy;
-    public int damage = 10;
+    public bool isDestroy;             // Determines whether the projectile should be destroyed after hitting a target
+    public int damage = 10;            // Amount of damage the projectile deals
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Monster")) // 태그가 Monster인 오브젝트와 충돌했을 때
+        // When the projectile collides with an object tagged "Monster"
+        if (other.CompareTag("Monster"))
         {
-            Debug.Log($"몬스터에게 {damage} 데미지를 입혔습니다!");
+            Debug.Log($"몬스터에게 {damage} 데미지를 입혔습니다!");  // "Dealt damage to monster!" in Korean
 
-            // 필요한 경우 여기에 실제 체력 감소 코드도 추가 가능
+            // Try applying damage to all enemy types if the component is present
             if (other.TryGetComponent<Enemy1>(out var enemy1))
             {
                 enemy1.OnDamage(damage);
@@ -43,8 +44,9 @@ public class ProjectileDamage : MonoBehaviour
                 boss3.OnDamage(damage);
             }
 
+            // Destroy the projectile if the flag is set to true
             if (isDestroy)
-            Destroy(gameObject); // 충돌 후 제거하고 싶다면
+                Destroy(gameObject);
         }
     }
 }

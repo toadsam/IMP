@@ -2,31 +2,39 @@ using UnityEngine;
 
 public class TimedSpawnerOnProjectile : MonoBehaviour
 {
-    public GameObject objectToSpawn; // 생성할 물체 (예: 폭발 이펙트 등)
-    public float spawnDelay = 1f;    // 몇 초 뒤에 생성할지
-    public float destroyAfter = 2f;  // 생성된 물체를 몇 초 뒤에 삭제할지
-    private bool hasSpawned = false; // 중복 생성 방지
+    public GameObject objectToSpawn;    // The object to spawn (e.g., explosion effect)
+    public float spawnDelay = 1f;       // Delay in seconds before spawning the object
+    public float destroyAfter = 2f;     // How long to wait before destroying the spawned object
+    private bool hasSpawned = false;    // Prevents spawning more than once
 
     void Start()
     {
+        // Automatically attempt to spawn after a delay
         Invoke(nameof(SpawnAtCurrentPosition), spawnDelay);
     }
 
+    // Spawns the object at the projectile's current position
     void SpawnAtCurrentPosition()
     {
+        // Do not spawn if already spawned or if no object is assigned
         if (hasSpawned || objectToSpawn == null) return;
 
         hasSpawned = true;
+
+        // Instantiate the object at this position and rotation
         GameObject spawned = Instantiate(objectToSpawn, transform.position, transform.rotation);
+
+        // Destroy the spawned object after a delay
         Destroy(spawned, destroyAfter);
     }
 
+    // Also trigger spawn immediately on collision with a monster
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Monster"))
         {
-            Debug.Log("Attacking Enemy"); // 충돌 확인
-            SpawnAtCurrentPosition(); // 몬스터에 닿았을 때도 생성
+            Debug.Log("Attacking Enemy"); // Confirm collision
+            SpawnAtCurrentPosition();     // Trigger spawn effect on hit
         }
     }
 }

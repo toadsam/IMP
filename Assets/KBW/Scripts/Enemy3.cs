@@ -1,20 +1,18 @@
 using System.Collections;
 using UnityEngine;
 
-public enum Enemy3State { Normal, Dragged, Thrown } //Enemy3 던지기 기능을 위한 상태들
-
 public class Enemy3 : MonoBehaviour
 {
-    public float speed = 0.5f;
-    public float health = 5f;
-    public float damage = 5f;
+    public float speed = 0.5f;         // Movement speed
+    public float health = 5f;          // Health points
+    public float damage = 5f;          // Damage dealt to the player
 
-    private Transform target;
-    private Spawner spawner;
-    private Rigidbody rb;
+    private Transform target;          // Target (usually the player)
+    private Spawner spawner;           // Reference to the spawner
+    private Rigidbody rb;              // Rigidbody for physics
 
-    AudioSource enemySound;
-    Animator animator;
+    AudioSource enemySound;            // Sound to play on death
+    Animator animator;                 // Animator for animations
 
     void Start()
     {
@@ -23,6 +21,7 @@ public class Enemy3 : MonoBehaviour
         enemySound = GetComponent<AudioSource>();
     }
 
+    // Called externally to initialize target and spawner reference
     public void Init(Transform target, Spawner spawner)
     {
         this.target = target;
@@ -31,6 +30,7 @@ public class Enemy3 : MonoBehaviour
 
     void Update()
     {
+        // Debug/test feature: kill the enemy when space key is pressed
         if (Input.GetKeyDown(KeyCode.Space))
         {
             OnDamage(100f);
@@ -39,25 +39,31 @@ public class Enemy3 : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Move towards the target
         transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
         transform.LookAt(target);
+
+        // Animation toggle based on movement
         Vector3 movement = new Vector3(transform.position.x, 0, transform.position.z).normalized;
         float movementSpeed = movement.magnitude;
         animator.SetBool("isRun", movementSpeed > 0.1f);
     }
 
+    // Handle enemy death
     void Die()
     {
         animator.SetBool("isDeath", true);
         enemySound.Play();
+
         if (spawner != null)
         {
-            spawner.OnEnemy3Slained();
+            spawner.OnEnemy3Slained();  // Notify spawner
         }
 
-        Destroy(gameObject,1f);
+        Destroy(gameObject, 1f);         // Destroy enemy after delay
     }
 
+    // Called when enemy takes damage
     public void OnDamage(float damage)
     {
         health -= damage;
@@ -69,6 +75,7 @@ public class Enemy3 : MonoBehaviour
         }
     }
 
+    // Handle collision with player
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -76,10 +83,9 @@ public class Enemy3 : MonoBehaviour
             PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage((int)damage); // 데미지 적용
-                Debug.Log("플레이어에게 데미지를 주었습니다.");
+                playerHealth.TakeDamage((int)damage); // Deal damage to player
+                Debug.Log("Dealt damage to the player.");
             }
         }
     }
-
 }

@@ -3,7 +3,10 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    // Reference to the player (in this case, the camera)
     public Transform player;
+
+    // Prefabs for enemies and bosses
     public GameObject enemy1Prefab;
     public GameObject boss1Prefab;
     public GameObject enemy2Prefab;
@@ -11,9 +14,13 @@ public class Spawner : MonoBehaviour
     public GameObject enemy3Prefab;
     public GameObject boss3Prefab;
 
+    // Number of enemies to defeat before boss appears
     public int counterBoss = 10;
+
+    // Internal kill counter
     private int slainedMoster = 0;
 
+    // Spawn state flags for each enemy/boss
     private bool enemy1Spawned = false;
     private bool enemy2Spawned = false;
     private bool enemy3Spawned = false;
@@ -22,79 +29,93 @@ public class Spawner : MonoBehaviour
     private bool boss2Spawned = false;
     private bool boss3Spawned = false;
 
+    // Flags for game end conditions
     private bool isEnd = false;
     private bool isLoss = false;
 
-
+    // Time between each spawn
     public float spawnInterval = 3f;
 
+    // UI component for handling win/loss screens
     public EndUI endUI;
 
-   
     void Start()
     {
+        // Start by spawning Enemy1
         enemy1Spawned = true;
         StartCoroutine(SpawnEnemy1());
+
+        // Locate the player (camera)
         player = GameObject.Find("Main Camera").transform;
+
+        // Initialize EndUI if not assigned
         if (endUI == null)
         {
-            GameObject obj = GameObject.Find("EndUI"); // 오브젝트 이름 정확히 입력
+            GameObject obj = GameObject.Find("EndUI");
             if (obj != null)
-               endUI = obj.GetComponent<EndUI>();
+                endUI = obj.GetComponent<EndUI>();
         }
     }
 
     void Update()
     {
-        IsEnd();
-        IsLoss();
+        IsEnd();   // Check for win
+        IsLoss();  // Check for loss
     }
-    void IsEnd() 
+
+    void IsEnd()
     {
-        if (isEnd) 
+        if (isEnd)
         {
-            endUI.WinEnd();
+            endUI.WinEnd();  // Show win screen
         }
     }
+
     void IsLoss()
     {
         if (isLoss)
         {
-            endUI.LossEnd();
+            endUI.LossEnd();  // Show loss screen
         }
     }
 
+    // Coroutine to continuously spawn Enemy1
     IEnumerator SpawnEnemy1()
     {
         while (enemy1Spawned)
         {
             yield return new WaitForSeconds(spawnInterval);
-            SpawnMonster(enemy1Prefab);            
+            SpawnMonster(enemy1Prefab);
         }
     }
 
+    // Coroutine to continuously spawn Enemy2
     IEnumerator SpawnEnemy2()
     {
         while (enemy2Spawned)
         {
             yield return new WaitForSeconds(spawnInterval);
-            SpawnMonster(enemy2Prefab);            
+            SpawnMonster(enemy2Prefab);
         }
     }
 
+    // Coroutine to continuously spawn Enemy3
     IEnumerator SpawnEnemy3()
     {
         while (enemy3Spawned)
         {
             yield return new WaitForSeconds(spawnInterval);
-            SpawnMonster(enemy3Prefab);            
+            SpawnMonster(enemy3Prefab);
         }
     }
 
+    // Handles the actual monster instantiation and initialization
     void SpawnMonster(GameObject prefab)
     {
-        Vector3 spawnPos = transform.position;  
+        Vector3 spawnPos = transform.position;
         GameObject monster = Instantiate(prefab, spawnPos, Quaternion.identity);
+
+        // Initialize respective components if present
         if (monster.TryGetComponent<Enemy1>(out var enemy1))
         {
             enemy1.Init(player, this);
@@ -114,11 +135,11 @@ public class Spawner : MonoBehaviour
         {
             boss2.Init(player, this);
         }
-        
+
         if (monster.TryGetComponent<Enemy3>(out var enemy3))
         {
             enemy3.Init(player, this);
-            StartCoroutine(CloakingEnemy(monster));
+            StartCoroutine(CloakingEnemy(monster));  // Enable cloaking behavior
         }
 
         if (monster.TryGetComponent<Boss3>(out var boss3))
@@ -127,9 +148,10 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    // Called when Enemy1 is defeated
     public void OnEnemy1Slained()
     {
-        slainedMoster ++;
+        slainedMoster++;
         Debug.Log("Enemy1:" + slainedMoster);
         if (slainedMoster >= counterBoss && !boss1Spawned)
         {
@@ -140,6 +162,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    // Called when Enemy2 is defeated
     public void OnEnemy2Slained()
     {
         slainedMoster++;
@@ -153,6 +176,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    // Called when Enemy3 is defeated
     public void OnEnemy3Slained()
     {
         slainedMoster++;
@@ -165,9 +189,10 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    // Called when Boss1 is defeated
     public void OnBoss1Slained()
     {
-        Debug.Log("You Slained Boss1");        
+        Debug.Log("You Slained Boss1");
         if (!enemy2Spawned)
         {
             boss1Spawned = false;
@@ -177,6 +202,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    // Called when Boss2 is defeated
     public void OnBoss2Slained()
     {
         Debug.Log("You Slained Boss2");
@@ -184,33 +210,35 @@ public class Spawner : MonoBehaviour
         {
             boss2Spawned = false;
             enemy3Spawned = true;
-            StartCoroutine(SpawnEnemy3());            
+            StartCoroutine(SpawnEnemy3());
             slainedMoster = 0;
         }
     }
 
+    // Called when Boss3 is defeated (end of the game)
     public void OnBoss3Slained()
     {
         Debug.Log("You Slained Boss3");
-        
-        //게임 종료 기능 여기서 시작
+
         boss3Spawned = false;
         enemy3Spawned = false;
         slainedMoster = 0;
 
-        isEnd = true;
+        isEnd = true;  // Trigger win state
     }
 
+    // Coroutine to spawn Boss1 with delay
     IEnumerator SpawnBoss1()
     {
         yield return new WaitForSeconds(5f);
-        if(boss1Spawned)
+        if (boss1Spawned)
         {
             Debug.Log("Warning1");
             SpawnMonster(boss1Prefab);
-        }        
+        }
     }
 
+    // Coroutine to spawn Boss2 with delay
     IEnumerator SpawnBoss2()
     {
         yield return new WaitForSeconds(5f);
@@ -218,19 +246,21 @@ public class Spawner : MonoBehaviour
         {
             Debug.Log("Warning2");
             SpawnMonster(boss2Prefab);
-        }        
+        }
     }
 
+    // Coroutine to spawn Boss3 with delay
     IEnumerator SpawnBoss3()
     {
         yield return new WaitForSeconds(5f);
-        if(boss3Spawned)
+        if (boss3Spawned)
         {
             Debug.Log("Warning3");
             SpawnMonster(boss3Prefab);
-        }        
+        }
     }
 
+    // Cloaking behavior: turn invisible and visible at intervals
     IEnumerator CloakingEnemy(GameObject cloakingEnemy)
     {
         while (cloakingEnemy != null)
@@ -239,6 +269,6 @@ public class Spawner : MonoBehaviour
             cloakingEnemy.SetActive(false);
             yield return new WaitForSeconds(1f + Random.Range(-0.5f, 0.5f));
             cloakingEnemy.SetActive(true);
-        }        
+        }
     }
 }

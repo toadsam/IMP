@@ -3,17 +3,18 @@ using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int maxHealth = 100;
-    private int currentHealth;
+    public int maxHealth = 100;                // Maximum health value
+    private int currentHealth;                 // Current health of the player
 
-    public EndUI endUI;
+    public EndUI endUI;                        // Reference to the End UI for game over
 
-    [SerializeField] private Slider hpSlider; // ✅ Unity UI 슬라이더 (Slider_Top 연결)
+    [SerializeField] private Slider hpSlider;  // ✅ Unity UI Slider for health bar (linked to Slider_Top)
 
     void Start()
     {
         currentHealth = maxHealth;
 
+        // Initialize the health bar UI
         if (hpSlider != null)
         {
             hpSlider.maxValue = maxHealth;
@@ -23,21 +24,23 @@ public class PlayerHealth : MonoBehaviour
 
     void Update()
     {
-        
+        // No per-frame logic is needed here currently
     }
 
+    // Called when the player takes damage
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);  // Prevent negative values
         UpdateHealthUI();
 
         if (currentHealth <= 0)
         {
-            Die();
+            Die();  // Trigger death if health drops to zero
         }
     }
 
+    // Called to heal the player
     public void Heal(int amount)
     {
         currentHealth += amount;
@@ -45,6 +48,7 @@ public class PlayerHealth : MonoBehaviour
         UpdateHealthUI();
     }
 
+    // Updates the health bar UI to reflect current health
     private void UpdateHealthUI()
     {
         if (hpSlider != null)
@@ -53,13 +57,16 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    // Called when the player's health reaches zero
     private void Die()
     {
-        Debug.Log("플레이어 사망!");
-        endUI.LossEnd();
-        // 사망 시 처리
+        Debug.Log("플레이어 사망!");  // "Player has died!" in Korean
+        endUI.LossEnd();              // Trigger loss screen
+
+        // Additional death behavior can be added here
     }
 
+    // Returns the current health value
     public int GetCurrentHealth()
     {
         return currentHealth;
