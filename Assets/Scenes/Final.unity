@@ -10665,6 +10665,7 @@ MonoBehaviour:
   weaponSolved: {fileID: 1838028340}
   health: 100
   weaponshooterwithJoystick: {fileID: 52669167}
+  playerHealth: {fileID: 1174222404}
 --- !u!114 &1936511504
 MonoBehaviour:
   m_ObjectHideFlags: 0

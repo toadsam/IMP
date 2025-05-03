@@ -28,6 +28,8 @@ public class ItemSpawner : MonoBehaviour
 
     public WeaponShooterWithJoystick weaponshooterwithJoystick;
 
+    public PlayerHealth playerHealth;
+
     void Awake()
     {
         // Find 'Player' script
@@ -303,7 +305,8 @@ public class ItemSpawner : MonoBehaviour
         {
             case "Flower":
                 Debug.Log("Flower object clicked!");
-                player?.AddHealth(health);                
+                playerHealth.Heal(50);
+               // player?.AddHealth(health);                
                 collectedItems.Add("Flower");
 
                 if (heartAudioSource != null) {
