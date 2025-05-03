@@ -17815,7 +17815,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleMessege: {fileID: 581456778}
-  endUIChild: {fileID: 0}
+  endUIChild: {fileID: 1077016755}
 --- !u!114 &1470769812
 MonoBehaviour:
   m_ObjectHideFlags: 0
