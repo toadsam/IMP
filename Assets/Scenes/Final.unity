@@ -1960,8 +1960,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 043936be2e5643641910059e70192ecd, type: 3}
-  m_Resource: {fileID: 8300000, guid: 043936be2e5643641910059e70192ecd, type: 3}
+  m_audioClip: {fileID: 8300000, guid: bb32fbe58e3904a5d94ef8995c7d5570, type: 3}
+  m_Resource: {fileID: 8300000, guid: bb32fbe58e3904a5d94ef8995c7d5570, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -9051,12 +9051,12 @@ PrefabInstance:
     - target: {fileID: 4240836949848494126, guid: 9baa26b2b172141588387aa854b84640,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 532
+      value: 399
       objectReference: {fileID: 0}
     - target: {fileID: 4240836949848494126, guid: 9baa26b2b172141588387aa854b84640,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1354
+      value: -849
       objectReference: {fileID: 0}
     - target: {fileID: 4240836949848494126, guid: 9baa26b2b172141588387aa854b84640,
         type: 3}
@@ -11678,7 +11678,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  endUI: {fileID: 0}
+  endUI: {fileID: 1470769811}
   hpSlider: {fileID: 1195780790}
 --- !u!136 &1174222405
 CapsuleCollider:
@@ -11699,10 +11699,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 6
   m_Height: 1.5
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: -2}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &1174222406
 Rigidbody:
   m_ObjectHideFlags: 0

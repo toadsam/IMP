@@ -4910,7 +4910,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isDestroy: 1
-  damage: 10
+  damage: 5
 --- !u!114 &3529593534760557562
 MonoBehaviour:
   m_ObjectHideFlags: 0

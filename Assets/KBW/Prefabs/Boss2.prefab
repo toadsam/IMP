@@ -46,7 +46,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 445295799531992839}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 100
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -100,10 +100,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 671fa50409161e1408f55431bd783474, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.1
-  rageSpeed: 0.5
+  speed: 0.05
+  rageSpeed: 0.1
   health: 200
-  damage: 1000
+  damage: 15
   bossDeath: {fileID: 3187208647081780791}
   bossRage: {fileID: -9211304600408917252}
 --- !u!82 &3187208647081780791

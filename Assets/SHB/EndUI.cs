@@ -26,9 +26,7 @@ public class EndUI : MonoBehaviour
     }
     public void WinEnd()
     {
-        endUIChild.SetActive(true);
-      //  Time.timeScale = 1.0f;
-
+        endUIChild.SetActive(true);      //  Time.timeScale = 1.0f;
     }
 
 
