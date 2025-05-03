@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,28 +7,24 @@ public class SHBUIController : MonoBehaviour
 {
     public GameObject startScreen;
     public GameObject scanningScreen;
+    public GameObject settingUI;
+    public GameObject settingScreen;
     public GameObject fightLabel;
     public GameObject fightButton;
     public TextMeshProUGUI scanButtonText;
     public GameObject usethis;
     private bool isScanning = false;
+    private bool isSettingOpen = false;
 
     void Start()
     {
         scanningScreen.SetActive(false);
         fightLabel.SetActive(false);
         fightButton.SetActive(false);
-    }
-    void Update()
-    {
-        // 화면을 터치하거나 클릭한 경우
-        if (Input.GetMouseButtonDown(0))  // 왼쪽 마우스 버튼 또는 화면 터치
-        {
-            SwitchScreens();
-        }
+        settingScreen.SetActive(false);
     }
 
-    void SwitchScreens()
+    public void SwitchScreens()
     {
         // startScreen을 끄고 scanningScreen을 켬
         if (startScreen != null && scanningScreen != null)
@@ -55,8 +52,30 @@ public class SHBUIController : MonoBehaviour
         }
     }
 
-    public void pressFightButton(){
+    public void pressFightButton()
+    {
         this.gameObject.SetActive(false);
+        settingUI.SetActive(false);
         usethis.GetComponent<UseThis>().isGameStart = true;
+    }
+
+    public void pressSettingButton()
+    {
+        StartCoroutine(WaitAndSwitchToSetting());
+    }
+
+    IEnumerator WaitAndSwitchToSetting()
+    {
+        settingScreen.SetActive(true);
+        yield return 0.5f;
+        this.gameObject.SetActive(false);
+        isSettingOpen = true;
+    }
+
+    public void pressConfirmButton()
+    {
+        isSettingOpen = false;
+        this.gameObject.SetActive(true);
+        settingScreen.SetActive(false);
     }
 }
