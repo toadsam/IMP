@@ -3,7 +3,8 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public float speed = 1f;        // 투사체 속도
-    public float lifetime = 5f; 
+    public float lifetime = 5f;
+    public float damage = 5f;
 
     private Transform target;
 
@@ -25,12 +26,19 @@ public class Bullet : MonoBehaviour
         transform.position += direction * speed * Time.deltaTime;
     }
 
+
+
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            // 플레이어에게 데미지를 주는 함수 호출
-            Destroy(gameObject); 
+            Destroy(gameObject);
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage((int)damage); // 데미지 적용
+                Debug.Log("플레이어에게 데미지를 주었습니다.");
+            }
         }
     }
 }

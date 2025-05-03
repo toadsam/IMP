@@ -24,11 +24,19 @@ public class Spawner : MonoBehaviour
 
     public float spawnInterval = 3f;
 
+    public EndUI endUI;
+
     void Start()
     {
         enemy1Spawned = true;
         StartCoroutine(SpawnEnemy1());
         player = GameObject.Find("Main Camera").transform;
+        if (endUI == null)
+        {
+            GameObject obj = GameObject.Find("EndUI"); // 오브젝트 이름 정확히 입력
+            if (obj != null)
+                endUI = obj.GetComponent<EndUI>();
+        }
     }
 
     IEnumerator SpawnEnemy1()
@@ -165,6 +173,8 @@ public class Spawner : MonoBehaviour
         boss3Spawned = false;
         enemy3Spawned = false;
         slainedMoster = 0;
+
+        endUI.WinEnd();
     }
 
     IEnumerator SpawnBoss1()

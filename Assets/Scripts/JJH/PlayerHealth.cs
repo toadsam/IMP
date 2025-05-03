@@ -6,6 +6,8 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 100;
     private int currentHealth;
 
+    public EndUI endUI;
+
     [SerializeField] private Slider hpSlider; // ✅ Unity UI 슬라이더 (Slider_Top 연결)
 
     void Start()
@@ -58,6 +60,7 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         Debug.Log("플레이어 사망!");
+        endUI.LossEnd();
         // 사망 시 처리
     }
 

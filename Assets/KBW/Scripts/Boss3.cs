@@ -88,6 +88,19 @@ public class Boss3 : MonoBehaviour
         }
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage((int)damage); // 데미지 적용
+                Debug.Log("플레이어에게 데미지를 주었습니다.");
+            }
+        }
+    }
+
 
 
 }

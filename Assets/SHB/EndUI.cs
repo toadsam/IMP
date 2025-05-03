@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WinUI : MonoBehaviour
+public class EndUI : MonoBehaviour
 {
     public TextMeshProUGUI titleMessege;
     void Start()
@@ -15,4 +15,20 @@ public class WinUI : MonoBehaviour
     {
         
     }
+
+    public void LossEnd() 
+    {
+        this.gameObject.SetActive(true);
+        titleMessege.text = "You Die!";
+        Time.timeScale = 1.0f;
+    }
+    public void WinEnd()
+    {
+        this.gameObject.SetActive(true);
+        Time.timeScale = 1.0f;
+
+    }
+
+
+
 }
