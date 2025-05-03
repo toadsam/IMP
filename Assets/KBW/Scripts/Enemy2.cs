@@ -80,5 +80,6 @@ public class Enemy2 : MonoBehaviour
                 Debug.Log("플레이어에게 데미지를 주었습니다.");
             }
         }
+
     }
 }

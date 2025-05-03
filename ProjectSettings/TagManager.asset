@@ -10,6 +10,7 @@ TagManager:
   - spawner
   - Bullet
   - Boss
+  - Shield
   layers:
   - Default
   - TransparentFX

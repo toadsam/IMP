@@ -112,5 +112,18 @@ public class Boss2 : MonoBehaviour
                 Debug.Log("플레이어에게 데미지를 주었습니다.");
             }
         }
+
+        if (other.CompareTag("Shield"))
+        {
+            Rigidbody rb = GetComponent<Rigidbody>();
+
+                if (rb != null)
+                {
+                    Vector3 pushDirection = (transform.position - transform.position).normalized;
+                    float pushForce = 5f; // 밀어내는 힘의 크기 조절 가능
+                    rb.AddForce(pushDirection * pushForce, ForceMode.Impulse);
+                }
+            
+        }
     }
 }
