@@ -40,5 +40,10 @@ public class Bullet : MonoBehaviour
                 Debug.Log("플레이어에게 데미지를 주었습니다.");
             }
         }
+
+        if(other.CompareTag("Shield"))
+        {
+            Destroy(gameObject);
+        }
     }
 }

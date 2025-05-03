@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 902593270013689535}
   - component: {fileID: 3683335728084153177}
   - component: {fileID: 7310617409428630235}
+  - component: {fileID: -1518293294868236753}
   m_Layer: 0
   m_Name: StarBullet
   m_TagString: Untagged
@@ -4874,6 +4875,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-1518293294868236753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580522221687014368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63d4532ba9992d74e8c63109b7665fb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemy1: {fileID: 0}
+  isDestroy: 0
+  damage: 10
 --- !u!1 &1608332992019187459
 GameObject:
   m_ObjectHideFlags: 0

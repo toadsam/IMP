@@ -30608,8 +30608,8 @@ MonoBehaviour:
   BombAudioSource: {fileID: 3163162989376535548, guid: 9ba0398840b995148934cff69e9d3f1d,
     type: 3}
   radius: 30
-  power: 30
-  lift: 10
+  power: 5
+  lift: 1
 --- !u!1 &1846604720013428
 GameObject:
   m_ObjectHideFlags: 0

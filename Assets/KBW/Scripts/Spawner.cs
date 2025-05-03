@@ -22,10 +22,14 @@ public class Spawner : MonoBehaviour
     private bool boss2Spawned = false;
     private bool boss3Spawned = false;
 
+    private bool isEnd = false;
+
+
     public float spawnInterval = 3f;
 
     public EndUI endUI;
 
+   
     void Start()
     {
         enemy1Spawned = true;
@@ -35,7 +39,21 @@ public class Spawner : MonoBehaviour
         {
             GameObject obj = GameObject.Find("EndUI"); // 오브젝트 이름 정확히 입력
             if (obj != null)
-                endUI = obj.GetComponent<EndUI>();
+               endUI = obj.GetComponent<EndUI>();
+            //obj.SetActive(false);
+            
+        }
+    }
+
+    void Update()
+    {
+        IsEnd();
+    }
+    void IsEnd() 
+    {
+        if (isEnd) 
+        {
+            endUI.WinEnd();
         }
     }
 
@@ -143,6 +161,7 @@ public class Spawner : MonoBehaviour
     public void OnBoss1Slained()
     {
         Debug.Log("You Slained Boss1");
+        isEnd = true;
         if (!enemy2Spawned)
         {
             boss1Spawned = false;
@@ -155,6 +174,7 @@ public class Spawner : MonoBehaviour
     public void OnBoss2Slained()
     {
         Debug.Log("You Slained Boss2");
+        endUI.WinEnd();
         if (!enemy3Spawned)
         {
             boss2Spawned = false;
@@ -169,7 +189,6 @@ public class Spawner : MonoBehaviour
         Debug.Log("You Slained Boss3");
         
         //게임 종료 기능 여기서 시작
-
         boss3Spawned = false;
         enemy3Spawned = false;
         slainedMoster = 0;

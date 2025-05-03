@@ -26,7 +26,7 @@ public class PlayerHealth : MonoBehaviour
         // ✅ 스페이스바 누르면 데미지 10 적용
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            TakeDamage(10);
+          //  TakeDamage(10);
         }
     }
 

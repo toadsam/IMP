@@ -117,12 +117,13 @@ public class Boss2 : MonoBehaviour
         {
             Rigidbody rb = GetComponent<Rigidbody>();
 
-                if (rb != null)
-                {
-                    Vector3 pushDirection = (transform.position - transform.position).normalized;
-                    float pushForce = 5f; // 밀어내는 힘의 크기 조절 가능
-                    rb.AddForce(pushDirection * pushForce, ForceMode.Impulse);
-                }
+            Debug.Log("Boss2 detect Shield");
+            if (rb != null)
+            {
+                Vector3 pushDirection = (transform.position - transform.position).normalized;
+                float pushForce = 100f; // 밀어내는 힘의 크기 조절 가능
+                rb.AddForce(pushDirection * pushForce, ForceMode.Impulse);
+            }
             
         }
     }

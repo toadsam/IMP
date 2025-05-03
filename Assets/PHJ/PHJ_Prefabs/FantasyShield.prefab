@@ -98,8 +98,8 @@ GameObject:
   - component: {fileID: 4984351957402322920}
   - component: {fileID: 4166575217124969838}
   - component: {fileID: 4094500902734959701}
-  - component: {fileID: 884513467113002452}
   - component: {fileID: 8257417436200346962}
+  - component: {fileID: 4485711844397978421}
   m_Layer: 0
   m_Name: FantasyShield
   m_TagString: Shield
@@ -202,8 +202,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!64 &884513467113002452
-MeshCollider:
+--- !u!114 &8257417436200346962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483448460241589754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a51bdaf9a6b3ff648a5f3e74eff68e81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockSound: {fileID: 3553834079816431296, guid: 8bb5f7305cd8f30448da9e638a371d3a,
+    type: 3}
+--- !u!65 &4485711844397978421
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -220,24 +234,9 @@ MeshCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -7181809764460644640, guid: c66d1c23422a8e54ba61774886a263cd, type: 3}
---- !u!114 &8257417436200346962
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1483448460241589754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a51bdaf9a6b3ff648a5f3e74eff68e81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  blockSound: {fileID: 3553834079816431296, guid: 8bb5f7305cd8f30448da9e638a371d3a,
-    type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.5, y: 0.5, z: 0.25}
+  m_Center: {x: 0, y: 0.0006099045, z: 0.0041346364}
 --- !u!1 &1920775212379394970
 GameObject:
   m_ObjectHideFlags: 0
