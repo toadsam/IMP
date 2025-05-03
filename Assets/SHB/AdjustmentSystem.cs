@@ -111,7 +111,7 @@ public class AdjustmentSystem : MonoBehaviour
 
         // 7. 몬스터스포너 생성은 useThis.cs에서 처리하도록 하겠다.
         // SpawnMonsterSpawners(floor.transform, width, length);
-
+        floor.transform.localScale *= 1.5f;
         sendAllSetEnd();
     }
 
