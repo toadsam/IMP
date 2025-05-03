@@ -1,26 +1,36 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Handles timed explosion attack that affects nearby monsters after a delay.
+/// </summary>
 public class TimeAttack : MonoBehaviour
 {
-    [SerializeField] private AudioSource BombAudioSource;
-    [SerializeField] private float radius = 30f; // 폭발 반경
-    [SerializeField] private float power = 30f; // 폭발 힘
-    [SerializeField] private float lift = 10f; // 폭발로 인한 상승력
+    [SerializeField] private AudioSource BombAudioSource; // Audio source for bomb explosion sound
+    [SerializeField] private float radius = 30f;          // Explosion radius
+    [SerializeField] private float power = 30f;           // Explosion force power
+    [SerializeField] private float lift = 10f;            // Upward force applied during explosion
 
+    /// <summary>
+    /// Called when the object becomes enabled and active.
+    /// Starts the bomb audio and explosion coroutine after a delay.
+    /// </summary>
     void OnEnable()
     {
-        // Play BombAudioSource after 6 seconds
+        // Start delayed explosion sequence
         StartCoroutine(PlayBombAudioAfterDelay(6f));
     }
 
+    /// <summary>
+    /// Coroutine that waits for a specified delay, then applies explosion force to monsters.
+    /// </summary>
     private IEnumerator PlayBombAudioAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        
+
         Vector3 explosionPos = transform.position;
 
-        // 'Monster' 태그를 가진 모든 GameObject 가져오기
+        // Find all GameObjects tagged as "Monster"
         var monsters = GameObject.FindGameObjectsWithTag("Monster");
 
         if (monsters.Length == 0)
@@ -36,17 +46,19 @@ public class TimeAttack : MonoBehaviour
             }
         }
 
+        // Apply explosion force to each monster with Rigidbody within range
         foreach (var monster in monsters)
         {
-            // Rigidbody가 있는지 검사
             var rb = monster.GetComponent<Rigidbody>();
+
+            // Skip monsters without Rigidbody
             if (rb == null)
             {
                 Debug.Log($"Monster {monster.name} does not have a Rigidbody.");
                 continue;
             }
 
-            // 폭발 반경 내에 있는지 거리로 검사
+            // Check if monster is within explosion radius
             float dist = Vector3.Distance(explosionPos, monster.transform.position);
             if (dist > radius)
             {
@@ -55,7 +67,7 @@ public class TimeAttack : MonoBehaviour
                 continue;
             }
 
-            // AddExplosionForce로 밀어내기
+            // Apply explosion force with upward lift
             rb.AddExplosionForce(
                 power,
                 explosionPos,
@@ -66,6 +78,7 @@ public class TimeAttack : MonoBehaviour
             Debug.Log($"Explosion force applied to {monster.name}.");
         }
 
+        // Play bomb sound if available
         if (BombAudioSource != null)
         {
             BombAudioSource.Play();

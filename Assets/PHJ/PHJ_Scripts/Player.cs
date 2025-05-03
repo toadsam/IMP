@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
         
     }
 
+    // Add Player health about 10.
     public void AddHealth(int health)
     {
         health += 10;
